@@ -1,12 +1,13 @@
 {
   "name": "nh-nahid-portfolio",
   "version": "1.0.0",
-  "main": "app.js",
+  "type": "module",
+  "main": "server.js",
   "author": "Nahid Hossain",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon app.js",
-    "start": "node app.js"
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
