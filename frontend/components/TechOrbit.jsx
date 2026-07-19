@@ -37,7 +37,7 @@ export default function TechOrbit() {
       <div className="absolute inset-0 z-20 flex items-center justify-center">
         <div className="float-soft h-28 w-28 overflow-hidden rounded-full ring-4 ring-lime-400 ring-opacity-40 sm:h-36 sm:w-36 md:h-44 md:w-44">
           <img
-            src={PHOTO_SRC}
+            src="./nahid.jpeg"
             alt="Nahid Hossain"
             className="h-full w-full object-cover"
           />
