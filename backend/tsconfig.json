@@ -10,13 +10,18 @@
     "strict": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    "types": [
+      "node"
+    ]
   },
 
   "include": [
     "**/*.ts",
     "**/*.d.ts"
   ],
+
   "exclude": [
     "dist",
     "node_modules"
