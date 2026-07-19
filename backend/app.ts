@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 
 import adminRouter from "./routers/adminRouter.js";
+import skillRouter from "./routers/skillRouter.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
 
 const app = express();
@@ -22,6 +23,8 @@ app.use(morgan("dev"));
 
 
 app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/profile", adminRouter);
+app.use("/api/v1/skills", skillRouter);
 
 app.use((_req, res) => {
   res.status(404).json({

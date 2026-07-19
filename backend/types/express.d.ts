@@ -9,6 +9,7 @@ declare global {
         email: string;
         role: string;
       };
+      file?: Multer.File;
     }
   }
 }
