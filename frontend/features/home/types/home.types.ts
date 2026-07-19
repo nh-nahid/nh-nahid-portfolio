@@ -33,10 +33,29 @@ export interface Project {
   url: string;
 }
 
+export interface Education {
+  _id: string;
+  degree: string;
+  school: string;
+  period: string;
+  location: string;
+  order: number;
+}
+
+export interface Certification {
+  _id: string;
+  name: string;
+  issuer: string;
+  order: number;
+}
+
 export interface HomeData {
   profile: Profile;
   stats: Stat[];
   skills: Skill[];
   experiences: Experience[];
   featuredProjects: Project[];
+  education: Education[];
+  certifications: Certification[];
 }
+

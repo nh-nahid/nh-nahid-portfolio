@@ -1,37 +1,16 @@
 export interface Experience {
   _id: string;
-
+  role: string;
   company: string;
+  period: string;
+  location: string;
+  points: string[];
 
-  position: string;
-
-  description: string;
-
+  employmentType?: string;
   companyLogo?: string;
-
-  location?: string;
-
-
-  startDate: string;
-
-  endDate?: string;
-
-  currentlyWorking: boolean;
-
-
-  responsibilities: string[];
-
-
-  technologies: string[];
-
-
-  companyUrl?: string;
-
-
-  order: number;
-
-
-  createdAt?: string;
-
-  updatedAt?: string;
+  technologies?: string[];
+  currentlyWorking?: boolean;
+  startDate?: string;
+  endDate?: string | null;
+  order?: number;
 }

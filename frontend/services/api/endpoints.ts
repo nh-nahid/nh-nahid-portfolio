@@ -4,7 +4,7 @@ export const ENDPOINTS = {
 
   SKILLS: "/skills",
 
-  EXPERIENCE: "/experiences",
+  EXPERIENCES: "/experiences",
 
   PROJECTS: "/projects",
 

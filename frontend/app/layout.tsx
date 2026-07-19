@@ -9,6 +9,8 @@ import {
 import "./globals.css";
 
 import ReduxProvider from "@/redux/provider";
+import { Toaster } from "sonner";
+import SmoothScroll from "@/components/SmoothScroll";
 
 
 const spaceGrotesk = Space_Grotesk({
@@ -60,7 +62,12 @@ export default function RootLayout({
         `}
       >
         <ReduxProvider>
+          <SmoothScroll />
           {children}
+          <Toaster
+          position="bottom-right"
+          richColors
+        />
         </ReduxProvider>
       </body>
     </html>

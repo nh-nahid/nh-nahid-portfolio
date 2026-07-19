@@ -3,21 +3,15 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import NetworkMesh from "../components/NetworkMesh";
 import Summary from "../components/Summary";
-import Stack from "../features/skills/components/Stack";
+import EducationCerts from "../components/EducationCerts";
 
 import Hero from "@/features/profile/components/Hero";
 import Stats from "@/features/home/components/Stats";
-/* ---------------------------------------------------------------
-   ROOT — composes every section.
+import Stack from "../features/skills/components/Stack";
+import Experience from "@/features/experience/components/Experience";
+import Projects from "@/features/projects/components/Projects";
+import Contact from "@/features/contact/components/Contact";
 
-   Layering is explicit and avoids negative z-index entirely (which
-   silently loses to an ancestor's own background unless that
-   ancestor forms its own stacking context — the earlier -z-10/-5
-   approach was getting hidden behind bg-zinc-950 on the root div):
-
-     - one fixed, z-0 layer holds the gradient + animated mesh
-     - one relative, z-10 layer holds the real content
-----------------------------------------------------------------*/
 export default function Portfolio() {
   return (
     <div className="relative min-h-screen font-body text-white">
@@ -36,10 +30,10 @@ export default function Portfolio() {
           <Stats />
           <Summary />
           <Stack />
-          {/* <Experience />
+          <Experience />
           <Projects />
           <EducationCerts />
-          <Contact /> */}
+          <Contact />
         </main>
         <Footer />
       </div>

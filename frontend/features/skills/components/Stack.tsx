@@ -5,11 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { getHome } from "@/features/home/api/home.api";
 import Reveal from "@/components/Reveal";
 import TechOrbit from "../../../components/TechOrbit";
+import { getSkills } from "../api/skill.api";
 
 export default async function Stack() {
   const home = await getHome();
-
-  const skills = home.skills?.[0];
+  const allSkills = await getSkills();
+  const skills = allSkills[0];
 
   if (!skills) return null;
 
