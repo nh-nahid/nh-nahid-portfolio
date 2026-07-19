@@ -7,6 +7,7 @@ import {
   deleteAvatar,
   updateResume,
   deleteResume,
+  downloadResume,
 } from "../controllers/profileController.js";
 
 import { checkLogin } from "../middlewares/checkLogin.js";
@@ -65,6 +66,11 @@ router.delete(
   "/resume",
   checkLogin,
   deleteResume
+);
+
+router.get(
+  "/resume/download",
+  downloadResume
 );
 
 export default router;

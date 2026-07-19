@@ -305,3 +305,51 @@ export const deleteResume = async (
     next(error);
   }
 };
+
+
+
+// =======================
+// DOWNLOAD RESUME
+// =======================
+export const downloadResume = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const profile = await Profile.findOne();
+
+    if (!profile || !profile.resume) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume not found",
+      });
+    }
+
+
+    const resumePath = path.join(
+      process.cwd(),
+      "public",
+      "uploads",
+      "resumes",
+      profile.resume
+    );
+
+
+    if (!fs.existsSync(resumePath)) {
+      return res.status(404).json({
+        success: false,
+        message: "Resume file not found",
+      });
+    }
+
+
+    return res.download(
+      resumePath,
+      "Nahid-Hossain-Resume.pdf"
+    );
+
+  } catch (error) {
+    next(error);
+  }
+};

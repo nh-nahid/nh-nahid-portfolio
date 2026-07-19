@@ -5,7 +5,8 @@ export interface IProfile extends Document {
   title: string;
   subtitle: string;
   bio: string;
-
+  about: string;
+  
   email: string;
   phone: string;
   location: string;
@@ -46,6 +47,10 @@ const profileSchema = new Schema<IProfile>(
       default: "",
       trim: true,
     },
+    about: {
+  type: String,
+  default: "",
+},
 
     email: {
       type: String,
