@@ -2,8 +2,8 @@ import React from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
 
-import Reveal from "./Reveal";
 import { getHome } from "@/features/home/api/home.api";
+import Reveal from "@/components/Reveal";
 
 
 export default async function Stats() {

@@ -1,17 +1,12 @@
-import React from "react";
-import NetworkMesh from "../components/NetworkMesh";
 import CustomCursor from "../components/CustomCursor";
-import Navbar from "../components/Navbar";
-import Stats from "../components/Stats";
-import Summary from "../components/Summary";
-import Stack from "../components/Stack";
-import Experience from "../components/Experience";
-import Projects from "../components/Projects";
-import EducationCerts from "../components/EducationCerts";
-import Contact from "../components/Contact";
 import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import NetworkMesh from "../components/NetworkMesh";
+import Summary from "../components/Summary";
+import Stack from "../features/skills/components/Stack";
 
 import Hero from "@/features/profile/components/Hero";
+import Stats from "@/features/home/components/Stats";
 /* ---------------------------------------------------------------
    ROOT — composes every section.
 
@@ -39,9 +34,9 @@ export default function Portfolio() {
         <main>
           <Hero />
           <Stats />
-            {/* <Summary />
+          <Summary />
           <Stack />
-          <Experience />
+          {/* <Experience />
           <Projects />
           <EducationCerts />
           <Contact /> */}

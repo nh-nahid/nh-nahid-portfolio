@@ -16,9 +16,9 @@ export default async function Hero() {
   }
 
 
-  const imageUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/uploads/${profile.avatar}`;
+const imageUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/uploads/${profile.avatar}`;
 
-console.log("IMAGE URL:", imageUrl);
+
 
   return (
     <section
