@@ -12,7 +12,7 @@ import Experience from "@/features/experience/components/Experience";
 import Projects from "@/features/projects/components/Projects";
 import Contact from "@/features/contact/components/Contact";
 
-export const revalidate = 60;
+export const revalidate = 5;
 
 export default function Portfolio() {
   return (
