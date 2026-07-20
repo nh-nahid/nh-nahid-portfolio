@@ -30,7 +30,7 @@ export default async function Contact() {
       </Reveal>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
-        <Reveal className="space-y-4 md:col-span-2">
+        <Reveal className="space-y-4 flex flex-col  md:col-span-2">
           <a href={`mailto:${profile.email}`}>
             <Card className="border border-zinc-800 bg-zinc-900/40 text-white backdrop-blur-sm transition-colors hover:border-lime-400/40">
               <CardContent className="flex items-center gap-3 p-4">
