@@ -8,7 +8,6 @@ import {
 
 import "./globals.css";
 
-import ReduxProvider from "@/redux/provider";
 import { Toaster } from "sonner";
 import SmoothScroll from "@/components/SmoothScroll";
 
@@ -61,14 +60,12 @@ export default function RootLayout({
           font-body
         `}
       >
-        <ReduxProvider>
           <SmoothScroll />
           {children}
           <Toaster
           position="bottom-right"
           richColors
         />
-        </ReduxProvider>
       </body>
     </html>
   );
