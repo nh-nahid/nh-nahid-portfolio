@@ -12,6 +12,8 @@ import Experience from "@/features/experience/components/Experience";
 import Projects from "@/features/projects/components/Projects";
 import Contact from "@/features/contact/components/Contact";
 
+export const revalidate = 60;
+
 export default function Portfolio() {
   return (
     <div className="relative min-h-screen font-body text-white">
