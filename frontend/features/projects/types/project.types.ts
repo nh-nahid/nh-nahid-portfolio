@@ -6,7 +6,7 @@ export interface Project {
   desc: string;
   url: string;
   github?: string;
-  image?: string;
+  coverImage?: string;
   featured: boolean;
   order: number;
   stack: string[];

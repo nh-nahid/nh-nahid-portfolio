@@ -35,7 +35,7 @@ export default async function Hero() {
           </h1>
 
           <p className="font-display mt-3 text-xl text-lime-400 sm:text-2xl">
-            Full-Stack Developer
+            {profile.title}
           </p>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-zinc-400">
