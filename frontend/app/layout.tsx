@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
 
-import {
-  Space_Grotesk,
-  Inter,
-  JetBrains_Mono,
-} from "next/font/google";
+import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
 
 import "./globals.css";
 
 import { Toaster } from "sonner";
 import SmoothScroll from "@/components/SmoothScroll";
-
+import Preloader from "@/components/Preloader";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -18,13 +14,11 @@ const spaceGrotesk = Space_Grotesk({
   weight: ["500", "600", "700"],
 });
 
-
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-body",
   weight: ["400", "500", "600"],
 });
-
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -32,13 +26,11 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600"],
 });
 
-
 export const metadata: Metadata = {
   title: "Nahid Hossain | Full-Stack Developer",
   description:
     "Portfolio of Nahid Hossain — Full-Stack Developer specializing in React, Next.js, TypeScript, and Node.js.",
 };
-
 
 export default function RootLayout({
   children,
@@ -60,12 +52,11 @@ export default function RootLayout({
           font-body
         `}
       >
-          <SmoothScroll />
-          {children}
-          <Toaster
-          position="bottom-right"
-          richColors
-        />
+        <SmoothScroll />
+        <Preloader />
+
+        {children}
+        <Toaster position="bottom-right" richColors />
       </body>
     </html>
   );
