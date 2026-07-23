@@ -10,6 +10,8 @@ const STATUS_MESSAGES = [
   { at: 92, text: "Almost there" },
 ];
 
+const QUOTE = "Code with clarity. Ship with confidence.";
+
 function statusFor(progress: number): string {
   let current = STATUS_MESSAGES[0].text;
 
@@ -91,7 +93,7 @@ export default function Preloader({
 
     const timer = setTimeout(() => {
       setHidden(true);
-    }, 550);
+    }, 1900);
 
     return () => clearTimeout(timer);
   }, [done]);
@@ -105,23 +107,46 @@ export default function Preloader({
 
   return (
     <div
-      className={`fixed inset-0 z-[999] flex flex-col items-center justify-center bg-zinc-950 transition-opacity duration-500 ${
+      className={`fixed inset-0 z-[999] flex flex-col items-center justify-center overflow-hidden bg-zinc-950 transition-all duration-[1800ms] ease-[cubic-bezier(0.65,0,0.35,1)] ${
         done
-          ? "pointer-events-none opacity-0"
-          : "opacity-100"
+          ? "pointer-events-none translate-y-full opacity-0"
+          : "translate-y-0 opacity-100"
       }`}
       role="status"
       aria-live="polite"
       aria-label={`Loading, ${shown}%`}
     >
+      {/* glowing edge that leads the reveal as the panel slides away */}
+      <span className="absolute inset-x-0 bottom-0 h-[2px] bg-lime-400 shadow-[0_0_24px_6px_rgba(163,230,53,0.55)]" />
       <span className="absolute left-6 top-6 h-6 w-6 border-l border-t border-lime-400/40" />
       <span className="absolute right-6 top-6 h-6 w-6 border-r border-t border-lime-400/40" />
       <span className="absolute bottom-6 left-6 h-6 w-6 border-b border-l border-lime-400/40" />
       <span className="absolute bottom-6 right-6 h-6 w-6 border-b border-r border-lime-400/40" />
 
-      <p className="font-mono-custom flex items-center gap-1 text-xs uppercase tracking-[0.3em] text-zinc-500">
+      <div className="absolute inset-x-0 top-8 flex justify-center sm:top-10">
+        <div className="font-display text-lg font-semibold tracking-tight text-white">
+          <span className="text-lime-400">
+            &lt;/&gt;
+          </span>{" "}
+          nahid
+          <span className="text-lime-400">
+            .dev
+          </span>
+        </div>
+      </div>
+
+      <p className="font-display max-w-md px-6 text-center text-2xl font-semibold leading-snug text-zinc-100 sm:max-w-xl sm:text-3xl">
+        {QUOTE}
+      </p>
+
+      <p className="font-mono-custom mt-6 flex items-center gap-1 text-xs uppercase tracking-[0.3em] text-zinc-500">
         {statusFor(shown)}
-        <span className="preloader-blink text-lime-400">_</span>
+        <span
+          className="preloader-blink text-lime-400"
+          style={{ animationPlayState: done ? "paused" : "running" }}
+        >
+          _
+        </span>
       </p>
 
       <p className="font-display mt-5 text-6xl font-bold tabular-nums text-white sm:text-7xl">
@@ -137,12 +162,6 @@ export default function Preloader({
           }}
         />
       </div>
-
-      <p className="font-mono-custom mt-6 text-[10px] uppercase tracking-widest text-zinc-700">
-        nahid.dev
-      </p>
-
-      
     </div>
   );
 }
