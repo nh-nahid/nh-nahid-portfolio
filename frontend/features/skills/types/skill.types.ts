@@ -1,3 +1,8 @@
+export interface SkillCategory {
+  title: string;
+  items: string[];
+}
+
 export interface Skill {
   _id: string;
 
@@ -7,6 +12,8 @@ export interface Skill {
 
   orbitTools: string[];
   toolbox: string[];
+
+  categories: SkillCategory[];
 
   createdAt?: string;
   updatedAt?: string;
