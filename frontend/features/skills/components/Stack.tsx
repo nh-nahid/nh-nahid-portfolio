@@ -26,7 +26,6 @@ export default async function Stack() {
   ]);
 
   const skills = skillsData?.[0];
-console.log(skills)
   if (!skills) {
     return null;
   }

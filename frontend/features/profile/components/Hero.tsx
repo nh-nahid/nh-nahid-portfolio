@@ -1,5 +1,5 @@
 import { Download, Mail, Phone, Sparkles } from "lucide-react";
-import { FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 import Reveal from "@/components/Reveal";
 import Image from "next/image";
@@ -69,6 +69,18 @@ export default async function Hero() {
                 aria-label="LinkedIn"
               >
                 <FaLinkedin className="h-5 w-5" />
+              </a>
+            )}
+
+            {profile.socialLinks?.github && (
+              <a
+                href={profile.socialLinks.github}
+                target="_blank"
+                rel="noreferrer"
+                className="transition-colors hover:text-lime-400"
+                aria-label="LinkedIn"
+              >
+                <FaGithub className="h-5 w-5" />
               </a>
             )}
 
