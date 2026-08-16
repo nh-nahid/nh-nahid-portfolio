@@ -53,7 +53,7 @@ export default function RootLayout({
         `}
       >
         <SmoothScroll />
-        <Preloader />
+        {/* <Preloader /> */}
 
         {children}
         <Toaster position="bottom-right" richColors />
