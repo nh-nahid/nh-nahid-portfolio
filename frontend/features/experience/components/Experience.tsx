@@ -49,9 +49,9 @@ export default async function Experience() {
                     </div>
 
                     <div className="text-right">
-                      <p className="font-mono-custom text-xs text-zinc-500">
+                      {/* <p className="font-mono-custom text-xs text-zinc-500">
                         {job.period}
-                      </p>
+                      </p> */}
 
                       <p className="flex items-center justify-end gap-1 text-xs text-zinc-500">
                         <MapPin className="h-3 w-3" />
