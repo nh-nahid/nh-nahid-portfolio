@@ -8,17 +8,23 @@ const connectDB = async () => {
     try {
         await mongoose.connect(env.MONGODB_URI);
         console.log("✅ MongoDB Connected");
-        // 1. Auto-seed Admin if empty
-        const adminCount = await Admin.countDocuments();
-        if (adminCount === 0) {
-            const hashedPassword = await bcrypt.hash("Nahid@2552", 10);
+        // 1. Auto-seed Admin or update existing admin's password
+        const adminEmail = "nahid4510@gmail.com";
+        const hashedPassword = await bcrypt.hash("Nahid@2552", 10);
+        const existingAdmin = await Admin.findOne({ email: adminEmail });
+        if (!existingAdmin) {
             await Admin.create({
                 name: "Nahid Hossain",
-                email: "nahid4510@gmail.com",
+                email: adminEmail,
                 password: hashedPassword,
                 bio: "Fullstack Developer",
             });
             console.log("🌱 Seeded production admin account successfully");
+        }
+        else {
+            existingAdmin.password = hashedPassword;
+            await existingAdmin.save();
+            console.log("🌱 Updated existing admin password to Nahid@2552");
         }
         // 2. Auto-seed Profile if empty
         const profileCount = await Profile.countDocuments();
