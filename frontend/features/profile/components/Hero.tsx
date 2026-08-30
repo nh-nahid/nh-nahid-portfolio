@@ -7,7 +7,12 @@ import ProjectButton from "./ProjectButton";
 import { getProfile } from "../api/profile.api";
 
 export default async function Hero() {
-  const profile = await getProfile();
+  let profile = null;
+  try {
+    profile = await getProfile();
+  } catch (err) {
+    console.error("Failed to load profile details in Hero:", err);
+  }
 
   if (!profile) {
     return null;

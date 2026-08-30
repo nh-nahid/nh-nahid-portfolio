@@ -20,20 +20,28 @@ const CATEGORY_ICONS = [
 ];
 
 export default async function Stack() {
-  const [home, skillsData] = await Promise.all([
-    getHome(),
-    getSkills(),
-  ]);
+  let home = null;
+  let skillsData = null;
+  try {
+    const res = await Promise.all([
+      getHome(),
+      getSkills(),
+    ]);
+    home = res[0];
+    skillsData = res[1];
+  } catch (err) {
+    console.error("Failed to load stack data inside Stack component:", err);
+  }
 
   const skills = skillsData?.[0];
   if (!skills) {
     return null;
   }
 
-  const orbitTools = home.skills?.[0]?.orbitTools ?? [];
+  const orbitTools = home?.skills?.[0]?.orbitTools ?? [];
 
   const avatar =
-    home.profile?.avatar
+    home?.profile?.avatar
       ? `${process.env.NEXT_PUBLIC_SERVER_URL}/uploads/${home.profile.avatar}`
       : "/nahid.jpeg";
 

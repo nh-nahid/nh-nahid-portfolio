@@ -5,9 +5,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import Reveal from "@/components/Reveal";
 
 import { getExperiences } from "@/features/experience/api/experience.api";
+import type { Experience } from "../types/experience.types";
 
 export default async function Experience() {
-  const experiences = await getExperiences();
+  let experiences: Experience[] = [];
+  try {
+    experiences = await getExperiences() || [];
+  } catch (err) {
+    console.error("Failed to load experiences in Experience component:", err);
+  }
 
   if (!experiences.length) {
     return null;

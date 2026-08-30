@@ -7,8 +7,17 @@ import Reveal from "@/components/Reveal";
 import { getHome } from "@/features/home/api/home.api";
 
 export default async function EducationCerts() {
-  const home = await getHome();
+  let home = null;
+  try {
+    home = await getHome();
+  } catch (err) {
+    console.error("Failed to load home details in EducationCerts:", err);
+  }
+
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5050";
+  const education = home?.education || [];
+  const courses = home?.courses || [];
+  const certifications = home?.certifications || [];
 
   return (
     <section className="py-24">
@@ -24,7 +33,7 @@ export default async function EducationCerts() {
           </h2>
 
           <div className="flex flex-col gap-4">
-            {home.education.map((edu) => (
+            {education.map((edu) => (
               <Card
                 key={edu._id}
                 className="border-zinc-800 bg-zinc-950/60 backdrop-blur-sm"
@@ -56,7 +65,7 @@ export default async function EducationCerts() {
           </h2>
 
           <div className="grid gap-4 md:grid-cols-3">
-            {home.courses.map((course) => {
+            {courses.map((course) => {
               const logoSrc = course.logo
                 ? `${serverUrl}/uploads/courses/${course.logo}`
                 : "";
@@ -116,7 +125,7 @@ export default async function EducationCerts() {
           </h2>
 
           <div className="flex flex-col gap-4 md:flex-row md:flex-wrap">
-            {home.certifications.map((cert) => (
+            {certifications.map((cert) => (
               <Card
                 key={cert._id}
                 className="w-full border-zinc-800 bg-zinc-950/60 backdrop-blur-sm transition-all duration-300 hover:border-lime-400/40 md:min-w-[280px] md:flex-1"

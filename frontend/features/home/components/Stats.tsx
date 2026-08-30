@@ -4,10 +4,16 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import { getHome } from "@/features/home/api/home.api";
 import Reveal from "@/components/Reveal";
-
+import type { Stat } from "@/features/home/types/home.types";
 
 export default async function Stats() {
-  const { stats = [] } = await getHome();
+  let stats: Stat[] = [];
+  try {
+    const home = await getHome();
+    stats = home?.stats || [];
+  } catch (err) {
+    console.error("Failed to load stats details in Stats:", err);
+  }
 
   return (
     <section id="about" className="py-14">

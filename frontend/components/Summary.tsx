@@ -2,7 +2,16 @@ import { getProfile } from "@/features/profile/api/profile.api";
 import Reveal from "./Reveal";
 
 export default async function Summary() {
-  const profile = await getProfile();
+  let profile = null;
+  try {
+    profile = await getProfile();
+  } catch (err) {
+    console.error("Failed to load profile details in Summary:", err);
+  }
+
+  if (!profile) {
+    return null;
+  }
 
   return (
     <section className="mx-auto max-w-4xl px-5 py-24 text-center sm:px-8">

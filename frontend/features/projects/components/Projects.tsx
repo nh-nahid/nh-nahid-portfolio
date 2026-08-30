@@ -9,9 +9,15 @@ import { Badge } from "@/components/ui/badge";
 import Reveal from "@/components/Reveal";
 import { getProjects } from "../api/project.api";
 import { FaGithub } from "react-icons/fa";
+import type { Project } from "../types/project.types";
 
 export default async function Projects() {
-  const projects = await getProjects();
+  let projects: Project[] = [];
+  try {
+    projects = await getProjects() || [];
+  } catch (err) {
+    console.error("Failed to load projects in Projects component:", err);
+  }
 
   if (!projects.length) {
     return null;
