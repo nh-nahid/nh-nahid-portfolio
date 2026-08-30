@@ -11,4 +11,6 @@ export interface Project {
   order: number;
   stack: string[];
   points: string[];
+  slug?: string;
+  figmaUrl?: string;
 }

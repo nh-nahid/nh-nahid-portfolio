@@ -1,27 +1,24 @@
 import { Schema, model, Document } from "mongoose";
 
 export interface IProject extends Document {
-  title: string;
+  name: string;
   slug: string;
-  description: string;
-  image: string;
-
+  desc: string;
+  coverImage: string;
+  tag: string;
+  points: string[];
   category: string;
-
-  technologies: string[];
-
-  githubUrl?: string;
-  liveUrl?: string;
+  stack: string[];
+  github?: string;
+  url?: string;
   figmaUrl?: string;
-
   featured: boolean;
-
   order: number;
 }
 
 const projectSchema = new Schema<IProject>(
   {
-    title: {
+    name: {
       type: String,
       required: true,
       trim: true,
@@ -35,14 +32,24 @@ const projectSchema = new Schema<IProject>(
       trim: true,
     },
 
-    description: {
+    desc: {
       type: String,
       required: true,
     },
 
-    image: {
+    coverImage: {
       type: String,
       default: "",
+    },
+
+    tag: {
+      type: String,
+      default: "",
+    },
+
+    points: {
+      type: [String],
+      default: [],
     },
 
     category: {
@@ -50,17 +57,17 @@ const projectSchema = new Schema<IProject>(
       default: "Web",
     },
 
-    technologies: {
+    stack: {
       type: [String],
       default: [],
     },
 
-    githubUrl: {
+    github: {
       type: String,
       default: "",
     },
 
-    liveUrl: {
+    url: {
       type: String,
       default: "",
     },
@@ -85,7 +92,4 @@ const projectSchema = new Schema<IProject>(
   }
 );
 
-export default model<IProject>(
-  "Project",
-  projectSchema
-);
+export default model<IProject>("Project", projectSchema);

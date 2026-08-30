@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import fs from "fs";
-import path from "path";
 import Project from "../models/Project.js";
+import { deleteUploadFile } from "../utils/file.js";
 
 // =======================
 // GET ALL PROJECTS
@@ -77,17 +76,26 @@ export const createProject = async (
 ) => {
   try {
     const {
-      title,
+      name,
       slug,
-      description,
+      desc,
+      tag,
+      points,
       category,
-      technologies,
-      githubUrl,
-      liveUrl,
+      stack,
+      github,
+      url,
       figmaUrl,
       featured,
       order,
     } = req.body;
+
+    if (!name || !slug || !desc) {
+      return res.status(400).json({
+        success: false,
+        message: "Name, slug and desc (description) are required.",
+      });
+    }
 
     // Check existing slug
     const existingProject = await Project.findOne({
@@ -102,28 +110,29 @@ export const createProject = async (
     }
 
     const project = await Project.create({
-      title,
+      name,
       slug: slug.toLowerCase(),
-      description,
-      category,
-
-      technologies: technologies
-        ? Array.isArray(technologies)
-          ? technologies
-          : [technologies]
+      desc,
+      tag: tag || "",
+      points: points
+        ? Array.isArray(points)
+          ? points
+          : [points]
         : [],
-
-      githubUrl,
-      liveUrl,
+      category,
+      stack: stack
+        ? Array.isArray(stack)
+          ? stack
+          : [stack]
+        : [],
+      github,
+      url,
       figmaUrl,
-
       featured:
         featured === true ||
         featured === "true",
-
-      order,
-
-      image: req.file?.filename || "",
+      order: order ?? 0,
+      coverImage: req.file?.filename || "",
     });
 
     return res.status(201).json({
@@ -135,8 +144,6 @@ export const createProject = async (
     next(error);
   }
 };
-
-
 
 // =======================
 // UPDATE PROJECT
@@ -157,13 +164,15 @@ export const updateProject = async (
     }
 
     const {
-      title,
+      name,
       slug,
-      description,
+      desc,
+      tag,
+      points,
       category,
-      technologies,
-      githubUrl,
-      liveUrl,
+      stack,
+      github,
+      url,
       figmaUrl,
       featured,
       order,
@@ -186,58 +195,40 @@ export const updateProject = async (
       }
     }
 
-    // Replace image
+    // Replace coverImage
     if (req.file) {
-      const oldImage = project.image || (project as any).coverImage || project.get("coverImage");
+      const oldImage = project.coverImage || (project as any).image;
       if (oldImage) {
-        const oldImagePath = path.join(
-          process.cwd(),
-          "public",
-          "uploads",
-          "projects",
-          oldImage
-        );
-
-        if (fs.existsSync(oldImagePath)) {
-          fs.unlinkSync(oldImagePath);
-        }
+        deleteUploadFile("projects/" + oldImage);
       }
 
-      project.image = req.file.filename;
-      
-      // If legacy coverImage field is present, remove it to migrate to the new field
-      if (project.get("coverImage")) {
-        project.set("coverImage", undefined);
+      project.coverImage = req.file.filename;
+
+      // Unset old legacy image attribute if it existed
+      if (project.get("image")) {
+        project.set("image", undefined);
       }
     }
 
-    project.title = title ?? project.title;
+    project.name = name ?? project.name;
     project.slug = slug
       ? slug.toLowerCase()
       : project.slug;
+    project.desc = desc ?? project.desc;
+    project.tag = tag ?? project.tag;
+    project.category = category ?? project.category;
 
-    project.description =
-      description ?? project.description;
-
-    project.category =
-      category ?? project.category;
-
-    if (technologies !== undefined) {
-      project.technologies = Array.isArray(
-        technologies
-      )
-        ? technologies
-        : [technologies];
+    if (points !== undefined) {
+      project.points = Array.isArray(points) ? points : [points];
     }
 
-    project.githubUrl =
-      githubUrl ?? project.githubUrl;
+    if (stack !== undefined) {
+      project.stack = Array.isArray(stack) ? stack : [stack];
+    }
 
-    project.liveUrl =
-      liveUrl ?? project.liveUrl;
-
-    project.figmaUrl =
-      figmaUrl ?? project.figmaUrl;
+    project.github = github ?? project.github;
+    project.url = url ?? project.url;
+    project.figmaUrl = figmaUrl ?? project.figmaUrl;
 
     if (featured !== undefined) {
       project.featured =
@@ -245,7 +236,9 @@ export const updateProject = async (
         featured === "true";
     }
 
-    project.order = order ?? project.order;
+    if (order !== undefined) {
+      project.order = order;
+    }
 
     await project.save();
 
@@ -258,8 +251,6 @@ export const updateProject = async (
     next(error);
   }
 };
-
-
 
 // =======================
 // DELETE PROJECT
@@ -280,19 +271,9 @@ export const deleteProject = async (
     }
 
     // Delete project image
-    const imageToDelete = project.image || (project as any).coverImage || project.get("coverImage");
+    const imageToDelete = project.coverImage || (project as any).image;
     if (imageToDelete) {
-      const imagePath = path.join(
-        process.cwd(),
-        "public",
-        "uploads",
-        "projects",
-        imageToDelete
-      );
-
-      if (fs.existsSync(imagePath)) {
-        fs.unlinkSync(imagePath);
-      }
+      deleteUploadFile("projects/" + imageToDelete);
     }
 
     await project.deleteOne();

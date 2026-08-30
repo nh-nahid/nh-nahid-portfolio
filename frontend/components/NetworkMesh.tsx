@@ -2,35 +2,43 @@
 
 import React, { useEffect, useRef } from "react";
 
-/* ---------------------------------------------------------------
-   NETWORK MESH — a canvas of soft nodes that drift slowly and
-   draw a line to any neighbor within range. As the nodes float,
-   connections form and break, so the mesh shape keeps reforming.
+interface NetworkMeshProps {
+  density?: number; // particles per ~1,000,000px² of viewport
+  maxDistance?: number; // px within which two nodes connect
+  speed?: number; // drift speed
+  color?: string; // lime-400 as an "r, g, b" string
+}
 
-   Pure canvas (no dependency), respects prefers-reduced-motion,
-   and sits fixed behind the content at a low opacity so it reads
-   as texture rather than noise.
-----------------------------------------------------------------*/
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  r: number;
+}
+
 export default function NetworkMesh({
-  density = 70, // particles per ~1,000,000px² of viewport
-  maxDistance = 150, // px within which two nodes connect
-  speed = 0.25, // drift speed
-  color = "163, 230, 53", // lime-400 as an "r, g, b" string
-}) {
-  const canvasRef = useRef(null);
+  density = 70,
+  maxDistance = 150,
+  speed = 0.25,
+  color = "163, 230, 53",
+}: NetworkMeshProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    let particles = [];
-    let frameId;
+    let particles: Particle[] = [];
+    let frameId: number;
     let w = 0;
     let h = 0;
 
     function resize() {
+      if (!canvas || !ctx) return;
       const dpr = window.devicePixelRatio || 1;
       w = canvas.offsetWidth;
       h = canvas.offsetHeight;
@@ -51,6 +59,7 @@ export default function NetworkMesh({
     }
 
     function drawFrame() {
+      if (!ctx) return;
       ctx.clearRect(0, 0, w, h);
 
       particles.forEach((p) => {

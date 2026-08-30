@@ -1,8 +1,24 @@
 import { Request, Response, NextFunction } from "express";
-import multer from "multer";
-import path from "path";
-import fs from "fs";
 import Experience from "../models/Experience.js";
+import { deleteUploadFile } from "../utils/file.js";
+
+// Helper to format date into "MMM YYYY" (e.g. "Oct 2023")
+function formatPeriodDate(dateVal: any): string {
+  if (!dateVal) return "";
+  const d = new Date(dateVal);
+  if (isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+}
+
+// Helper to generate period string
+function makePeriod(startDate: string, endDate: string | null, currentlyWorking: boolean): string {
+  const startStr = formatPeriodDate(startDate);
+  if (currentlyWorking) {
+    return `${startStr} — Present`;
+  }
+  const endStr = formatPeriodDate(endDate);
+  return `${startStr} — ${endStr}`;
+}
 
 // =======================
 // GET ALL EXPERIENCES
@@ -16,6 +32,7 @@ export const getExperiences = async (
     const experiences = await Experience.find().sort({
       order: 1,
       startDate: -1,
+      createdAt: -1,
     });
 
     return res.status(200).json({
@@ -29,7 +46,6 @@ export const getExperiences = async (
   }
 };
 
-
 // =======================
 // CREATE EXPERIENCE
 // =======================
@@ -41,58 +57,48 @@ export const createExperience = async (
   try {
     const {
       company,
-      position,
+      role,
       employmentType,
       location,
       startDate,
       endDate,
       currentlyWorking,
-      description,
+      points,
       technologies,
       order,
     } = req.body;
 
-    // Prevent duplicate experience
-    const existingExperience = await Experience.findOne({
-      company: {
-        $regex: new RegExp(`^${company}$`, "i"),
-      },
-      position: {
-        $regex: new RegExp(`^${position}$`, "i"),
-      },
-    });
-
-    if (existingExperience) {
-      return res.status(409).json({
+    if (!company || !role) {
+      return res.status(400).json({
         success: false,
-        message: "Experience already exists",
+        message: "Company and role (position) are required.",
       });
     }
 
+    // Generate period string
+    const period = makePeriod(startDate, endDate, currentlyWorking === "true" || currentlyWorking === true);
+
     const experience = await Experience.create({
       company,
-      position,
+      role,
       employmentType,
       location,
-      startDate,
-      endDate: currentlyWorking ? null : endDate,
-      currentlyWorking,
-
-      description: description
-        ? Array.isArray(description)
-          ? description
-          : [description]
+      period,
+      points: points
+        ? Array.isArray(points)
+          ? points
+          : [points]
         : [],
-
       technologies: technologies
         ? Array.isArray(technologies)
           ? technologies
           : [technologies]
         : [],
-
+      currentlyWorking: currentlyWorking === "true" || currentlyWorking === true,
+      startDate: startDate ? new Date(startDate) : undefined,
+      endDate: endDate ? new Date(endDate) : undefined,
+      order: order ?? 0,
       companyLogo: req.file?.filename || "",
-
-      order,
     });
 
     return res.status(201).json({
@@ -125,95 +131,57 @@ export const updateExperience = async (
 
     const {
       company,
-      position,
+      role,
       employmentType,
       location,
       startDate,
       endDate,
       currentlyWorking,
-      description,
+      points,
       technologies,
       order,
     } = req.body;
 
-    // Prevent duplicate experience
-    if (company || position) {
-      const existingExperience = await Experience.findOne({
-        company: {
-          $regex: new RegExp(
-            `^${company ?? experience.company}$`,
-            "i"
-          ),
-        },
-        position: {
-          $regex: new RegExp(
-            `^${position ?? experience.position}$`,
-            "i"
-          ),
-        },
-        _id: {
-          $ne: experience._id,
-        },
-      });
-
-      if (existingExperience) {
-        return res.status(409).json({
-          success: false,
-          message: "Experience already exists",
-        });
-      }
-    }
-
-    // Replace company logo
+    // Replace logo
     if (req.file) {
       if (experience.companyLogo) {
-        const oldLogoPath = path.join(
-          process.cwd(),
-          "public",
-          "uploads",
-          "company-logos",
-          experience.companyLogo
-        );
-
-        if (fs.existsSync(oldLogoPath)) {
-          fs.unlinkSync(oldLogoPath);
-        }
+        deleteUploadFile("company-logos/" + experience.companyLogo);
       }
-
       experience.companyLogo = req.file.filename;
     }
 
     experience.company = company ?? experience.company;
-    experience.position = position ?? experience.position;
-    experience.employmentType =
-      employmentType ?? experience.employmentType;
+    experience.role = role ?? experience.role;
+    experience.employmentType = employmentType ?? experience.employmentType;
     experience.location = location ?? experience.location;
 
-    experience.startDate =
-      startDate ?? experience.startDate;
-
-    experience.currentlyWorking =
-      currentlyWorking ?? experience.currentlyWorking;
-
-    experience.endDate =
-      currentlyWorking === true ||
-      currentlyWorking === "true"
-        ? null
-        : endDate ?? experience.endDate;
-
-    if (description !== undefined) {
-      experience.description = Array.isArray(description)
-        ? description
-        : [description];
+    if (currentlyWorking !== undefined) {
+      experience.currentlyWorking = currentlyWorking === "true" || currentlyWorking === true;
+    }
+    if (startDate !== undefined) {
+      experience.startDate = startDate ? new Date(startDate) : undefined;
+    }
+    if (endDate !== undefined) {
+      experience.endDate = endDate ? new Date(endDate) : undefined;
     }
 
+    // Re-generate period string if dates/currently working status changed
+    const targetStartDate = startDate || experience.startDate;
+    const targetEndDate = endDate || experience.endDate;
+    const targetCurrentlyWorking = currentlyWorking !== undefined ? (currentlyWorking === "true" || currentlyWorking === true) : experience.currentlyWorking;
+    if (targetStartDate) {
+      experience.period = makePeriod(String(targetStartDate), targetEndDate ? String(targetEndDate) : null, targetCurrentlyWorking);
+    }
+
+    if (points !== undefined) {
+      experience.points = Array.isArray(points) ? points : [points];
+    }
     if (technologies !== undefined) {
-      experience.technologies = Array.isArray(technologies)
-        ? technologies
-        : [technologies];
+      experience.technologies = Array.isArray(technologies) ? technologies : [technologies];
     }
-
-    experience.order = order ?? experience.order;
+    if (order !== undefined) {
+      experience.order = order;
+    }
 
     await experience.save();
 
@@ -226,7 +194,6 @@ export const updateExperience = async (
     next(error);
   }
 };
-
 
 // =======================
 // DELETE EXPERIENCE
@@ -246,19 +213,9 @@ export const deleteExperience = async (
       });
     }
 
-    // Delete company logo
+    // Delete logo file
     if (experience.companyLogo) {
-      const logoPath = path.join(
-        process.cwd(),
-        "public",
-        "uploads",
-        "company-logos",
-        experience.companyLogo
-      );
-
-      if (fs.existsSync(logoPath)) {
-        fs.unlinkSync(logoPath);
-      }
+      deleteUploadFile("company-logos/" + experience.companyLogo);
     }
 
     await experience.deleteOne();

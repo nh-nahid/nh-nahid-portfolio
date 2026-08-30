@@ -10,8 +10,6 @@ const STATUS_MESSAGES = [
   { at: 92, text: "Almost there" },
 ];
 
-const QUOTE = "Code with clarity. Ship with confidence.";
-
 function statusFor(progress: number): string {
   let current = STATUS_MESSAGES[0].text;
 
@@ -33,8 +31,24 @@ export default function Preloader({
 }: PreloaderProps) {
   const [progress, setProgress] = useState(0);
   const [hidden, setHidden] = useState(false);
+  const [quote, setQuote] = useState("Code with clarity. Ship with confidence.");
 
   const done = progress >= 100;
+
+  useEffect(() => {
+    async function loadQuote() {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5050"}/api/v1/profile`);
+        const result = await res.json();
+        if (result.data?.subtitle) {
+          setQuote(result.data.subtitle);
+        }
+      } catch (err) {
+        console.error("Failed to load preloader quote", err);
+      }
+    }
+    loadQuote();
+  }, []);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia(
@@ -136,7 +150,7 @@ export default function Preloader({
       </div>
 
       <p className="font-display max-w-md px-6 text-center text-2xl font-semibold leading-snug text-zinc-100 sm:max-w-xl sm:text-3xl">
-        {QUOTE}
+        {quote}
       </p>
 
       <p className="font-mono-custom mt-6 flex items-center gap-1 text-xs uppercase tracking-[0.3em] text-zinc-500">

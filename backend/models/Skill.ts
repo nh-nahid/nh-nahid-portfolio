@@ -1,48 +1,36 @@
 import { Schema, model, Document } from "mongoose";
 
-export interface ISkill extends Document {
-  name: string;
-  category: string;
-  icon: string;
-  level: number;
+export interface ISkillCategory {
+  title: string;
+  items: string[];
+}
 
+export interface ISkill extends Document {
   sectionTitle: string;
   heading: string;
   description: string;
-
   orbitTools: string[];
   toolbox: string[];
-
-  order: number;
+  categories: ISkillCategory[];
 }
+
+const skillCategorySchema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    items: {
+      type: [String],
+      default: [],
+    },
+  },
+  { _id: false }
+);
 
 const skillSchema = new Schema<ISkill>(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    category: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    icon: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    level: {
-      type: Number,
-      required: true,
-      min: 0,
-      max: 100,
-      default: 80,
-    },
     sectionTitle: {
       type: String,
       default: "",
@@ -57,14 +45,25 @@ const skillSchema = new Schema<ISkill>(
       type: String,
       default: "",
     },
-    order: {
-      type: Number,
-      default: 0,
+
+    orbitTools: {
+      type: [String],
+      default: [],
+    },
+
+    toolbox: {
+      type: [String],
+      default: [],
+    },
+
+    categories: {
+      type: [skillCategorySchema],
+      default: [],
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export default model<ISkill>("Skill", skillSchema);

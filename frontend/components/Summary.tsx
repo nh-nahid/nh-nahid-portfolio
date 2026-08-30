@@ -15,7 +15,7 @@ export default async function Summary() {
           I care about the ten milliseconds nobody notices
         </h2>
 
-        <p className="mt-6 text-base leading-relaxed text-zinc-400">
+        <p className="mt-6 text-base leading-relaxed text-zinc-400 whitespace-pre-line">
           {profile.about}
         </p>
       </Reveal>

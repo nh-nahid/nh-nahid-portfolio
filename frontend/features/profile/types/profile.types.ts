@@ -9,7 +9,9 @@ export interface Profile {
   _id: string;
   name: string;
   title: string;
+  subtitle?: string;
   bio: string;
+  about: string;
   location: string;
   
   avatar: string;

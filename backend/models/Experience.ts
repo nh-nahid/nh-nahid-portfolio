@@ -2,15 +2,16 @@ import { Schema, model, Document } from "mongoose";
 
 export interface IExperience extends Document {
   company: string;
-  position: string;
+  role: string;
   employmentType: string;
   location: string;
-  startDate: Date;
-  endDate?: Date;
-  currentlyWorking: boolean;
-  description: string[];
+  period: string;
+  points: string[];
   technologies: string[];
   companyLogo: string;
+  currentlyWorking: boolean;
+  startDate?: Date;
+  endDate?: Date;
   order: number;
 }
 
@@ -22,7 +23,7 @@ const experienceSchema = new Schema<IExperience>(
       trim: true,
     },
 
-    position: {
+    role: {
       type: String,
       required: true,
       trim: true,
@@ -40,22 +41,13 @@ const experienceSchema = new Schema<IExperience>(
       trim: true,
     },
 
-    startDate: {
-      type: Date,
-      required: true,
+    period: {
+      type: String,
+      default: "",
+      trim: true,
     },
 
-    endDate: {
-      type: Date,
-      default: null,
-    },
-
-    currentlyWorking: {
-      type: Boolean,
-      default: false,
-    },
-
-    description: {
+    points: {
       type: [String],
       default: [],
     },
@@ -70,6 +62,20 @@ const experienceSchema = new Schema<IExperience>(
       default: "",
     },
 
+    currentlyWorking: {
+      type: Boolean,
+      default: false,
+    },
+
+    startDate: {
+      type: Date,
+    },
+
+    endDate: {
+      type: Date,
+      default: null,
+    },
+
     order: {
       type: Number,
       default: 0,
@@ -80,7 +86,4 @@ const experienceSchema = new Schema<IExperience>(
   }
 );
 
-export default model<IExperience>(
-  "Experience",
-  experienceSchema
-);
+export default model<IExperience>("Experience", experienceSchema);

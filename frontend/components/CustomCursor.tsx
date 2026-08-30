@@ -2,15 +2,9 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-/* ---------------------------------------------------------------
-   CUSTOM CURSOR — a small lime dot that tracks the mouse exactly,
-   plus a larger ring that eases toward it (lerp), growing and
-   glowing when hovering anything clickable. Automatically stays
-   off on touch devices and respects prefers-reduced-motion.
-----------------------------------------------------------------*/
 export default function CustomCursor() {
-  const dotRef = useRef(null);
-  const ringRef = useRef(null);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
@@ -25,9 +19,9 @@ export default function CustomCursor() {
     let mouseY = window.innerHeight / 2;
     let ringX = mouseX;
     let ringY = mouseY;
-    let frameId;
+    let frameId: number;
 
-    function handleMove(e) {
+    function handleMove(e: MouseEvent) {
       mouseX = e.clientX;
       mouseY = e.clientY;
       if (dotRef.current) {

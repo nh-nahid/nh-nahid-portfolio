@@ -22,7 +22,7 @@ export default async function Hero() {
   return (
     <section
       id="home"
-      className="relative overflow-hidden pb-24 pt-36 sm:pt-40"
+      className="relative overflow-hidden pb-12 pt-28 sm:pt-32"
     >
       <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 px-5 sm:px-8 md:grid-cols-2">
         <Reveal>
@@ -35,15 +35,15 @@ export default async function Hero() {
             {profile.name}
           </h1>
 
-          <p className="font-display mt-3 text-xl text-lime-400 sm:text-2xl">
+          <p className="font-display mt-2 text-xl text-lime-400 sm:text-2xl">
             {profile.title}
           </p>
 
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-zinc-400">
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-zinc-400">
             {profile.bio}
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-4">
+          <div className="mt-6 flex flex-wrap items-center gap-4">
             <ProjectButton />
 
             {profile.resume && (
@@ -60,7 +60,7 @@ export default async function Hero() {
             )}
           </div>
 
-          <div className="mt-10 flex items-center gap-5 text-zinc-500">
+          <div className="mt-6 flex items-center gap-5 text-zinc-500">
             {profile.socialLinks?.linkedin && (
               <a
                 href={profile.socialLinks.linkedin}

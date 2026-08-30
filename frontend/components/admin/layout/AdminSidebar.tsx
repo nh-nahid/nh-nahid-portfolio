@@ -34,20 +34,21 @@ const NAV_ITEMS = [
 
 interface AdminSidebarProps {
   onLogout?: () => void;
+  className?: string;
 }
 
-export default function AdminSidebar({ onLogout }: AdminSidebarProps) {
+export default function AdminSidebar({ onLogout, className }: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-64 flex-shrink-0 flex-col border-r border-zinc-800 bg-zinc-950">
+    <aside className={`flex h-full w-64 flex-shrink-0 flex-col border-r border-zinc-800 bg-zinc-950 ${className || ""}`}>
       <div className="flex items-center gap-2 border-b border-zinc-800 px-6 py-5">
         <span className="font-display text-lg font-semibold text-white">
           <span className="text-lime-400">&lt;/&gt;</span> admin
         </span>
       </div>
 
-      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+      <nav className="flex-1 space-y-1 overflow-y-auto no-scrollbar px-3 py-4">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;

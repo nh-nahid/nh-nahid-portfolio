@@ -1,14 +1,21 @@
-"use client"
+"use client";
 
 import React, { useEffect, useRef, useState } from "react";
 
-/* ---------------------------------------------------------------
-   SCROLL-REVEAL HELPER
-   Wrap any block in <Reveal> to fade/slide it in once it enters
-   the viewport. Use `delay` (ms) to stagger multiple items.
-----------------------------------------------------------------*/
-export default function Reveal({ children, className = "", delay = 0, as: Tag = "div" }) {
-  const ref = useRef(null);
+interface RevealProps {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  as?: React.ElementType;
+}
+
+export default function Reveal({
+  children,
+  className = "",
+  delay = 0,
+  as: Tag = "div",
+}: RevealProps) {
+  const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import Experience from "../models/Experience.js";
 import Project from "../models/Project.js";
 import Education from "../models/Education.js";
 import Certification from "../models/Certification.js";
+import Course from "../models/Course.js";
 
 export const getHome = async (
   _req: Request,
@@ -22,6 +23,7 @@ export const getHome = async (
       featuredProjects,
       education,
       certifications,
+      courses,
     ] = await Promise.all([
       Home.findOne(),
 
@@ -48,6 +50,10 @@ export const getHome = async (
       Certification.find().sort({
         order: 1,
       }),
+
+      Course.find().sort({
+        order: 1,
+      }),
     ]);
 
     return res.status(200).json({
@@ -68,7 +74,39 @@ export const getHome = async (
         education,
 
         certifications,
+
+        courses,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// =======================
+// UPDATE HOME STATS
+// =======================
+export const updateHomeStats = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { stats } = req.body; // array of { value, label }
+
+    let home = await Home.findOne();
+
+    if (!home) {
+      home = await Home.create({ stats });
+    } else {
+      home.stats = stats;
+      await home.save();
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Home stats updated successfully",
+      data: home.stats,
     });
   } catch (error) {
     next(error);

@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import fs from "fs";
 import path from "path";
 import Profile from "../models/Profile.js";
+import { deleteUploadFile } from "../utils/file.js";
 
 // =======================
 // GET PROFILE
@@ -46,6 +47,7 @@ export const updateProfile = async (
       title,
       subtitle,
       bio,
+      about,
       email,
       phone,
       location,
@@ -70,6 +72,7 @@ export const updateProfile = async (
     profile.title = title ?? profile.title;
     profile.subtitle = subtitle ?? profile.subtitle;
     profile.bio = bio ?? profile.bio;
+    profile.about = about ?? profile.about;
 
     profile.email = email ?? profile.email;
     profile.phone = phone ?? profile.phone;
@@ -122,16 +125,7 @@ export const updateAvatar = async (
 
     // Delete old avatar
     if (profile.avatar) {
-      const oldAvatarPath = path.join(
-        process.cwd(),
-        "public",
-        "uploads",
-        profile.avatar
-      );
-
-      if (fs.existsSync(oldAvatarPath)) {
-        fs.unlinkSync(oldAvatarPath);
-      }
+      deleteUploadFile(profile.avatar);
     }
 
     // Save new avatar filename with directory prefix
@@ -174,16 +168,7 @@ export const deleteAvatar = async (
       });
     }
 
-    const avatarPath = path.join(
-      process.cwd(),
-      "public",
-      "uploads",
-      profile.avatar
-    );
-
-    if (fs.existsSync(avatarPath)) {
-      fs.unlinkSync(avatarPath);
-    }
+    deleteUploadFile(profile.avatar);
 
     profile.avatar = "";
 
@@ -226,16 +211,7 @@ export const updateResume = async (
 
     // Delete old resume
     if (profile.resume) {
-      const oldResumePath = path.join(
-        process.cwd(),
-        "public",
-        "uploads",
-        profile.resume
-      );
-
-      if (fs.existsSync(oldResumePath)) {
-        fs.unlinkSync(oldResumePath);
-      }
+      deleteUploadFile(profile.resume);
     }
 
     // Save new resume filename with directory prefix
@@ -278,16 +254,7 @@ export const deleteResume = async (
       });
     }
 
-    const resumePath = path.join(
-      process.cwd(),
-      "public",
-      "uploads",
-      profile.resume
-    );
-
-    if (fs.existsSync(resumePath)) {
-      fs.unlinkSync(resumePath);
-    }
+    deleteUploadFile(profile.resume);
 
     profile.resume = "";
 

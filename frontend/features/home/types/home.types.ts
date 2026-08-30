@@ -47,6 +47,18 @@ export interface Certification {
   name: string;
   issuer: string;
   order: number;
+  url?: string;
+  description?: string;
+}
+
+export interface Course {
+  _id: string;
+  name: string;
+  platform: string;
+  category: string;
+  description?: string;
+  logo?: string;
+  order: number;
 }
 
 export interface HomeData {
@@ -57,5 +69,6 @@ export interface HomeData {
   featuredProjects: Project[];
   education: Education[];
   certifications: Certification[];
+  courses: Course[];
 }
 
