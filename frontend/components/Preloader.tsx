@@ -107,7 +107,7 @@ export default function Preloader({
 
     const timer = setTimeout(() => {
       setHidden(true);
-    }, 1900);
+    }, 600);
 
     return () => clearTimeout(timer);
   }, [done]);
@@ -121,7 +121,7 @@ export default function Preloader({
 
   return (
     <div
-      className={`fixed inset-0 z-[999] flex flex-col items-center justify-center overflow-hidden bg-zinc-950 transition-all duration-[1800ms] ease-[cubic-bezier(0.65,0,0.35,1)] ${
+      className={`fixed inset-0 z-[999] flex flex-col items-center justify-center overflow-hidden bg-zinc-950 transition-all duration-[500ms] ease-[cubic-bezier(0.65,0,0.35,1)] ${
         done
           ? "pointer-events-none translate-y-full opacity-0"
           : "translate-y-0 opacity-100"

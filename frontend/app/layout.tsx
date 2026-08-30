@@ -55,7 +55,7 @@ export default function RootLayout({
         `}
       >
         <SmoothScroll />
-        {/* <Preloader /> */}
+        <Preloader />
 
         <AuthProvider>
           {children}
