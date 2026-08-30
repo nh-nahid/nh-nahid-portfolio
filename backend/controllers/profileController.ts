@@ -126,7 +126,6 @@ export const updateAvatar = async (
         process.cwd(),
         "public",
         "uploads",
-        "avatars",
         profile.avatar
       );
 
@@ -135,8 +134,8 @@ export const updateAvatar = async (
       }
     }
 
-    // Save new avatar filename
-    profile.avatar = req.file.filename;
+    // Save new avatar filename with directory prefix
+    profile.avatar = "avatars/" + req.file.filename;
 
     await profile.save();
 
@@ -179,7 +178,6 @@ export const deleteAvatar = async (
       process.cwd(),
       "public",
       "uploads",
-      "avatars",
       profile.avatar
     );
 
@@ -232,7 +230,6 @@ export const updateResume = async (
         process.cwd(),
         "public",
         "uploads",
-        "resumes",
         profile.resume
       );
 
@@ -241,8 +238,8 @@ export const updateResume = async (
       }
     }
 
-    // Save new resume filename
-    profile.resume = req.file.filename;
+    // Save new resume filename with directory prefix
+    profile.resume = "resumes/" + req.file.filename;
 
     await profile.save();
 
@@ -285,7 +282,6 @@ export const deleteResume = async (
       process.cwd(),
       "public",
       "uploads",
-      "resumes",
       profile.resume
     );
 
@@ -331,7 +327,6 @@ export const downloadResume = async (
       process.cwd(),
       "public",
       "uploads",
-      "resumes",
       profile.resume
     );
 

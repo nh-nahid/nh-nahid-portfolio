@@ -188,13 +188,14 @@ export const updateProject = async (
 
     // Replace image
     if (req.file) {
-      if (project.image) {
+      const oldImage = project.image || (project as any).coverImage || project.get("coverImage");
+      if (oldImage) {
         const oldImagePath = path.join(
           process.cwd(),
           "public",
           "uploads",
           "projects",
-          project.image
+          oldImage
         );
 
         if (fs.existsSync(oldImagePath)) {
@@ -203,6 +204,11 @@ export const updateProject = async (
       }
 
       project.image = req.file.filename;
+      
+      // If legacy coverImage field is present, remove it to migrate to the new field
+      if (project.get("coverImage")) {
+        project.set("coverImage", undefined);
+      }
     }
 
     project.title = title ?? project.title;
@@ -274,13 +280,14 @@ export const deleteProject = async (
     }
 
     // Delete project image
-    if (project.image) {
+    const imageToDelete = project.image || (project as any).coverImage || project.get("coverImage");
+    if (imageToDelete) {
       const imagePath = path.join(
         process.cwd(),
         "public",
         "uploads",
         "projects",
-        project.image
+        imageToDelete
       );
 
       if (fs.existsSync(imagePath)) {
