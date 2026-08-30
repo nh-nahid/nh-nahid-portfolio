@@ -15,8 +15,26 @@ import certificationRouter from "./routers/certificationRouter.js";
 import courseRouter from "./routers/courseRouter.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
 const app = express();
+const allowedOrigins = [
+    process.env.CLIENT_URL,
+    "http://localhost:3000",
+    "http://localhost:5173",
+].filter(Boolean);
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: (origin, callback) => {
+        if (!origin)
+            return callback(null, true);
+        const isAllowed = allowedOrigins.some((o) => o === origin) ||
+            origin.endsWith(".vercel.app") ||
+            origin.includes("localhost") ||
+            origin.includes("127.0.0.1");
+        if (isAllowed) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error("CORS validation failed: " + origin));
+        }
+    },
     credentials: true,
 }));
 app.use("/uploads", express.static(path.join(process.cwd(), "public/uploads")));

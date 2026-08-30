@@ -1,29 +1,25 @@
 import { Response } from "express";
-
+import { env } from "../config/env.js";
 
 const setRefreshCookie = (
   res: Response,
   refreshToken: string
 ) => {
+  const isProd = Boolean(
+    process.env.NODE_ENV === "production" || 
+    (env.MONGODB_URI && !env.MONGODB_URI.includes("localhost") && !env.MONGODB_URI.includes("127.0.0.1"))
+  );
+
   res.cookie(
     "refreshToken",
     refreshToken,
     {
       httpOnly: true,
-
-      secure:
-        process.env.NODE_ENV === "production",
-
-      sameSite:
-        process.env.NODE_ENV === "production"
-          ? "none"
-          : "lax",
-
-      maxAge:
-        7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     }
   );
 };
-
 
 export default setRefreshCookie;
