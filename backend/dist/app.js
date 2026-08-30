@@ -19,6 +19,8 @@ const allowedOrigins = [
     process.env.CLIENT_URL,
     "http://localhost:3000",
     "http://localhost:5173",
+    "https://www.nahidhossain.me",
+    "https://nahidhossain.me",
 ].filter(Boolean);
 app.use(cors({
     origin: (origin, callback) => {
