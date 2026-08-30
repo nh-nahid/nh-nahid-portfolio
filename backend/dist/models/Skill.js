@@ -1,27 +1,16 @@
 import { Schema, model } from "mongoose";
+const skillCategorySchema = new Schema({
+    title: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    items: {
+        type: [String],
+        default: [],
+    },
+}, { _id: false });
 const skillSchema = new Schema({
-    name: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    category: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    icon: {
-        type: String,
-        default: "",
-        trim: true,
-    },
-    level: {
-        type: Number,
-        required: true,
-        min: 0,
-        max: 100,
-        default: 80,
-    },
     sectionTitle: {
         type: String,
         default: "",
@@ -34,9 +23,17 @@ const skillSchema = new Schema({
         type: String,
         default: "",
     },
-    order: {
-        type: Number,
-        default: 0,
+    orbitTools: {
+        type: [String],
+        default: [],
+    },
+    toolbox: {
+        type: [String],
+        default: [],
+    },
+    categories: {
+        type: [skillCategorySchema],
+        default: [],
     },
 }, {
     timestamps: true,

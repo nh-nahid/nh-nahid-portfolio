@@ -10,6 +10,9 @@ import experienceRouter from "./routers/experienceRouter.js";
 import projectRouter from "./routers/projectRouter.js";
 import contactRouter from "./routers/contactRouter.js";
 import homeRouter from "./routers/homeRouter.js";
+import educationRouter from "./routers/educationRouter.js";
+import certificationRouter from "./routers/certificationRouter.js";
+import courseRouter from "./routers/courseRouter.js";
 import errorMiddleware from "./middlewares/errorMiddleware.js";
 const app = express();
 app.use(cors({
@@ -28,6 +31,9 @@ app.use("/api/v1/experiences", experienceRouter);
 app.use("/api/v1/projects", projectRouter);
 app.use("/api/v1/contact", contactRouter);
 app.use("/api/v1/home", homeRouter);
+app.use("/api/v1/educations", educationRouter);
+app.use("/api/v1/certifications", certificationRouter);
+app.use("/api/v1/courses", courseRouter);
 app.use((_req, res) => {
     res.status(404).json({
         success: false,

@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import Profile from "../models/Profile.js";
+import { deleteUploadFile } from "../utils/file.js";
 // =======================
 // GET PROFILE
 // =======================
@@ -28,7 +29,7 @@ export const getProfile = async (_req, res, next) => {
 // =======================
 export const updateProfile = async (req, res, next) => {
     try {
-        const { name, title, subtitle, bio, email, phone, location, github, linkedin, facebook, instagram, twitter, website, } = req.body;
+        const { name, title, subtitle, bio, about, email, phone, location, github, linkedin, facebook, instagram, twitter, website, } = req.body;
         const profile = await Profile.findOne();
         if (!profile) {
             return res.status(404).json({
@@ -40,6 +41,7 @@ export const updateProfile = async (req, res, next) => {
         profile.title = title ?? profile.title;
         profile.subtitle = subtitle ?? profile.subtitle;
         profile.bio = bio ?? profile.bio;
+        profile.about = about ?? profile.about;
         profile.email = email ?? profile.email;
         profile.phone = phone ?? profile.phone;
         profile.location = location ?? profile.location;
@@ -80,13 +82,10 @@ export const updateAvatar = async (req, res, next) => {
         }
         // Delete old avatar
         if (profile.avatar) {
-            const oldAvatarPath = path.join(process.cwd(), "public", "uploads", "avatars", profile.avatar);
-            if (fs.existsSync(oldAvatarPath)) {
-                fs.unlinkSync(oldAvatarPath);
-            }
+            deleteUploadFile(profile.avatar);
         }
-        // Save new avatar filename
-        profile.avatar = req.file.filename;
+        // Save new avatar filename with directory prefix
+        profile.avatar = "avatars/" + req.file.filename;
         await profile.save();
         return res.status(200).json({
             success: true,
@@ -116,10 +115,7 @@ export const deleteAvatar = async (_req, res, next) => {
                 message: "No avatar found",
             });
         }
-        const avatarPath = path.join(process.cwd(), "public", "uploads", "avatars", profile.avatar);
-        if (fs.existsSync(avatarPath)) {
-            fs.unlinkSync(avatarPath);
-        }
+        deleteUploadFile(profile.avatar);
         profile.avatar = "";
         await profile.save();
         return res.status(200).json({
@@ -151,13 +147,10 @@ export const updateResume = async (req, res, next) => {
         }
         // Delete old resume
         if (profile.resume) {
-            const oldResumePath = path.join(process.cwd(), "public", "uploads", "resumes", profile.resume);
-            if (fs.existsSync(oldResumePath)) {
-                fs.unlinkSync(oldResumePath);
-            }
+            deleteUploadFile(profile.resume);
         }
-        // Save new resume filename
-        profile.resume = req.file.filename;
+        // Save new resume filename with directory prefix
+        profile.resume = "resumes/" + req.file.filename;
         await profile.save();
         return res.status(200).json({
             success: true,
@@ -187,10 +180,7 @@ export const deleteResume = async (_req, res, next) => {
                 message: "No resume found",
             });
         }
-        const resumePath = path.join(process.cwd(), "public", "uploads", "resumes", profile.resume);
-        if (fs.existsSync(resumePath)) {
-            fs.unlinkSync(resumePath);
-        }
+        deleteUploadFile(profile.resume);
         profile.resume = "";
         await profile.save();
         return res.status(200).json({
@@ -214,7 +204,7 @@ export const downloadResume = async (_req, res, next) => {
                 message: "Resume not found",
             });
         }
-        const resumePath = path.join(process.cwd(), "public", "uploads", "resumes", profile.resume);
+        const resumePath = path.join(process.cwd(), "public", "uploads", profile.resume);
         if (!fs.existsSync(resumePath)) {
             return res.status(404).json({
                 success: false,

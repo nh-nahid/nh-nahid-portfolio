@@ -1,6 +1,5 @@
-import fs from "fs";
-import path from "path";
 import Project from "../models/Project.js";
+import { deleteUploadFile } from "../utils/file.js";
 // =======================
 // GET ALL PROJECTS
 // =======================
@@ -55,7 +54,13 @@ export const getProject = async (req, res, next) => {
 // =======================
 export const createProject = async (req, res, next) => {
     try {
-        const { title, slug, description, category, technologies, githubUrl, liveUrl, figmaUrl, featured, order, } = req.body;
+        const { name, slug, desc, tag, points, category, stack, github, url, figmaUrl, featured, order, } = req.body;
+        if (!name || !slug || !desc) {
+            return res.status(400).json({
+                success: false,
+                message: "Name, slug and desc (description) are required.",
+            });
+        }
         // Check existing slug
         const existingProject = await Project.findOne({
             slug: slug.toLowerCase(),
@@ -67,22 +72,28 @@ export const createProject = async (req, res, next) => {
             });
         }
         const project = await Project.create({
-            title,
+            name,
             slug: slug.toLowerCase(),
-            description,
-            category,
-            technologies: technologies
-                ? Array.isArray(technologies)
-                    ? technologies
-                    : [technologies]
+            desc,
+            tag: tag || "",
+            points: points
+                ? Array.isArray(points)
+                    ? points
+                    : [points]
                 : [],
-            githubUrl,
-            liveUrl,
+            category,
+            stack: stack
+                ? Array.isArray(stack)
+                    ? stack
+                    : [stack]
+                : [],
+            github,
+            url,
             figmaUrl,
             featured: featured === true ||
                 featured === "true",
-            order,
-            image: req.file?.filename || "",
+            order: order ?? 0,
+            coverImage: req.file?.filename || "",
         });
         return res.status(201).json({
             success: true,
@@ -106,7 +117,7 @@ export const updateProject = async (req, res, next) => {
                 message: "Project not found",
             });
         }
-        const { title, slug, description, category, technologies, githubUrl, liveUrl, figmaUrl, featured, order, } = req.body;
+        const { name, slug, desc, tag, points, category, stack, github, url, figmaUrl, featured, order, } = req.body;
         // Prevent duplicate slug
         if (slug) {
             const existingProject = await Project.findOne({
@@ -122,41 +133,42 @@ export const updateProject = async (req, res, next) => {
                 });
             }
         }
-        // Replace image
+        // Replace coverImage
         if (req.file) {
-            if (project.image) {
-                const oldImagePath = path.join(process.cwd(), "public", "uploads", "projects", project.image);
-                if (fs.existsSync(oldImagePath)) {
-                    fs.unlinkSync(oldImagePath);
-                }
+            const oldImage = project.coverImage || project.image;
+            if (oldImage) {
+                deleteUploadFile("projects/" + oldImage);
             }
-            project.image = req.file.filename;
+            project.coverImage = req.file.filename;
+            // Unset old legacy image attribute if it existed
+            if (project.get("image")) {
+                project.set("image", undefined);
+            }
         }
-        project.title = title ?? project.title;
+        project.name = name ?? project.name;
         project.slug = slug
             ? slug.toLowerCase()
             : project.slug;
-        project.description =
-            description ?? project.description;
-        project.category =
-            category ?? project.category;
-        if (technologies !== undefined) {
-            project.technologies = Array.isArray(technologies)
-                ? technologies
-                : [technologies];
+        project.desc = desc ?? project.desc;
+        project.tag = tag ?? project.tag;
+        project.category = category ?? project.category;
+        if (points !== undefined) {
+            project.points = Array.isArray(points) ? points : [points];
         }
-        project.githubUrl =
-            githubUrl ?? project.githubUrl;
-        project.liveUrl =
-            liveUrl ?? project.liveUrl;
-        project.figmaUrl =
-            figmaUrl ?? project.figmaUrl;
+        if (stack !== undefined) {
+            project.stack = Array.isArray(stack) ? stack : [stack];
+        }
+        project.github = github ?? project.github;
+        project.url = url ?? project.url;
+        project.figmaUrl = figmaUrl ?? project.figmaUrl;
         if (featured !== undefined) {
             project.featured =
                 featured === true ||
                     featured === "true";
         }
-        project.order = order ?? project.order;
+        if (order !== undefined) {
+            project.order = order;
+        }
         await project.save();
         return res.status(200).json({
             success: true,
@@ -181,11 +193,9 @@ export const deleteProject = async (req, res, next) => {
             });
         }
         // Delete project image
-        if (project.image) {
-            const imagePath = path.join(process.cwd(), "public", "uploads", "projects", project.image);
-            if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath);
-            }
+        const imageToDelete = project.coverImage || project.image;
+        if (imageToDelete) {
+            deleteUploadFile("projects/" + imageToDelete);
         }
         await project.deleteOne();
         return res.status(200).json({

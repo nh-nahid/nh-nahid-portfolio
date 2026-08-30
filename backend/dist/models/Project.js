@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 const projectSchema = new Schema({
-    title: {
+    name: {
         type: String,
         required: true,
         trim: true,
@@ -12,27 +12,35 @@ const projectSchema = new Schema({
         lowercase: true,
         trim: true,
     },
-    description: {
+    desc: {
         type: String,
         required: true,
     },
-    image: {
+    coverImage: {
         type: String,
         default: "",
+    },
+    tag: {
+        type: String,
+        default: "",
+    },
+    points: {
+        type: [String],
+        default: [],
     },
     category: {
         type: String,
         default: "Web",
     },
-    technologies: {
+    stack: {
         type: [String],
         default: [],
     },
-    githubUrl: {
+    github: {
         type: String,
         default: "",
     },
-    liveUrl: {
+    url: {
         type: String,
         default: "",
     },

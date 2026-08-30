@@ -5,7 +5,7 @@ const experienceSchema = new Schema({
         required: true,
         trim: true,
     },
-    position: {
+    role: {
         type: String,
         required: true,
         trim: true,
@@ -20,19 +20,12 @@ const experienceSchema = new Schema({
         default: "",
         trim: true,
     },
-    startDate: {
-        type: Date,
-        required: true,
+    period: {
+        type: String,
+        default: "",
+        trim: true,
     },
-    endDate: {
-        type: Date,
-        default: null,
-    },
-    currentlyWorking: {
-        type: Boolean,
-        default: false,
-    },
-    description: {
+    points: {
         type: [String],
         default: [],
     },
@@ -43,6 +36,17 @@ const experienceSchema = new Schema({
     companyLogo: {
         type: String,
         default: "",
+    },
+    currentlyWorking: {
+        type: Boolean,
+        default: false,
+    },
+    startDate: {
+        type: Date,
+    },
+    endDate: {
+        type: Date,
+        default: null,
     },
     order: {
         type: Number,
