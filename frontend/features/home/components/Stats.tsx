@@ -11,8 +11,8 @@ export default async function Stats() {
   try {
     const home = await getHome();
     stats = home?.stats || [];
-  } catch (err) {
-    console.error("Failed to load stats details in Stats:", err);
+  } catch {
+    // API offline during build, fallback gracefully
   }
 
   return (

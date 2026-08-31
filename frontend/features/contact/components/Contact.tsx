@@ -9,7 +9,16 @@ import { getProfile } from "@/features/profile/api/profile.api";
 import ContactForm from "./ContactForm";
 
 export default async function Contact() {
-  const profile = await getProfile();
+  let profile = null;
+  try {
+    profile = await getProfile();
+  } catch {
+    // API offline during build, fallback gracefully
+  }
+
+  if (!profile) {
+    return null;
+  }
 
   return (
     <section id="contact" className="mx-auto max-w-5xl px-5 py-24 sm:px-8">

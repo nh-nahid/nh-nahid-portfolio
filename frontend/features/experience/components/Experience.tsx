@@ -3,6 +3,7 @@ import { MapPin } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 import Reveal from "@/components/Reveal";
+import TechIcon from "@/components/TechIcon";
 
 import { getExperiences } from "@/features/experience/api/experience.api";
 import type { Experience } from "../types/experience.types";
@@ -11,8 +12,8 @@ export default async function Experience() {
   let experiences: Experience[] = [];
   try {
     experiences = await getExperiences() || [];
-  } catch (err) {
-    console.error("Failed to load experiences in Experience component:", err);
+  } catch {
+    // API offline during build, fallback gracefully
   }
 
   if (!experiences.length) {
@@ -83,9 +84,10 @@ export default async function Experience() {
                       {job.technologies.map((tech) => (
                         <span
                           key={tech}
-                          className="rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1 text-xs text-zinc-300"
+                          className="flex items-center gap-1.5 rounded-full border border-zinc-700 bg-zinc-900 px-3 py-1 text-xs text-zinc-300"
                         >
-                          {tech}
+                          <TechIcon name={tech} className="h-3 w-3 flex-shrink-0" />
+                          <span>{tech}</span>
                         </span>
                       ))}
                     </div>

@@ -10,8 +10,8 @@ export default async function EducationCerts() {
   let home = null;
   try {
     home = await getHome();
-  } catch (err) {
-    console.error("Failed to load home details in EducationCerts:", err);
+  } catch {
+    // API offline during build, fallback gracefully
   }
 
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5050";

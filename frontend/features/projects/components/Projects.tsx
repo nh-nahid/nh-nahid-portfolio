@@ -10,13 +10,14 @@ import Reveal from "@/components/Reveal";
 import { getProjects } from "../api/project.api";
 import { FaGithub } from "react-icons/fa";
 import type { Project } from "../types/project.types";
+import TechIcon from "@/components/TechIcon";
 
 export default async function Projects() {
   let projects: Project[] = [];
   try {
     projects = await getProjects() || [];
-  } catch (err) {
-    console.error("Failed to load projects in Projects component:", err);
+  } catch {
+    // API offline during build, fallback gracefully
   }
 
   if (!projects.length) {
@@ -116,9 +117,10 @@ export default async function Projects() {
                       <Badge
                         key={tech}
                         variant="outline"
-                        className="font-mono-custom rounded-full border-zinc-700 bg-transparent text-xs font-normal text-zinc-300"
+                        className="font-mono-custom flex items-center gap-1.5 rounded-full border-zinc-700 bg-zinc-900/60 px-3 py-1 text-xs font-normal text-zinc-300 transition-colors hover:border-lime-400/40"
                       >
-                        {tech}
+                        <TechIcon name={tech} className="h-3 w-3 flex-shrink-0" />
+                        <span>{tech}</span>
                       </Badge>
                     ))}
                   </div>

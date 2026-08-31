@@ -2,56 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-
-import type { LucideIcon } from "lucide-react";
-import {
-  Atom,
-  Blocks,
-  Box,
-  Braces,
-  Cable,
-  Cloud,
-  Code2,
-  Database,
-  FileCode2,
-  GitBranch,
-  MonitorSmartphone,
-  Package,
-  Server,
-  TestTube2,
-} from "lucide-react";
+import TechIcon from "@/components/TechIcon";
 
 interface TechOrbitProps {
   tools: string[];
   image: string;
 }
-
-const ICON_MAP: Record<string, LucideIcon> = {
-  "React.js": Atom,
-  "Next.js": MonitorSmartphone,
-  TypeScript: FileCode2,
-  "JavaScript (ES6+)": Braces,
-  "Node.js": Server,
-  "Express.js": Cable,
-  MongoDB: Database,
-  MySQL: Database,
-  Supabase: Cloud,
-  Redux: Blocks,
-  "Redux Toolkit": Blocks,
-  "Tailwind CSS": Package,
-  Tailwind: Package,
-  Axios: Cable,
-  "Framer Motion": Box,
-  Firebase: Cloud,
-  GraphQL: Braces,
-  "Socket.io": Cable,
-  "Prisma ORM": Database,
-  Vitest: TestTube2,
-  Docker: Box,
-  Git: GitBranch,
-  GitHub: GitBranch,
-  Postman: Package,
-};
 
 export default function TechOrbit({
   tools,
@@ -102,7 +58,6 @@ export default function TechOrbit({
       <div className="orbit-ring absolute inset-0 z-10">
         {tools.map((tool, index) => {
           const angle = (360 / tools.length) * index;
-          const Icon = ICON_MAP[tool];
 
           return (
             <div
@@ -112,18 +67,11 @@ export default function TechOrbit({
                 transform: `rotate(${angle}deg) translate(${radius}px)`,
               }}
             >
-              <div className="orbit-counter flex h-full w-full items-center justify-center rounded-full border border-lime-400/30 bg-zinc-900/90 shadow-lg">
-                {Icon ? (
-                  <Icon
-                    className="h-5 w-5 text-lime-300"
-                    strokeWidth={1.8}
-                  />
-                ) : (
-                  <Code2
-                    className="h-5 w-5 text-lime-300"
-                    strokeWidth={1.8}
-                  />
-                )}
+              <div className="orbit-counter flex h-full w-full items-center justify-center rounded-full border border-lime-400/30 bg-zinc-900/90 shadow-lg backdrop-blur-sm transition-transform hover:scale-125 hover:border-lime-400">
+                <TechIcon
+                  name={tool}
+                  className="h-5 w-5 transition-transform"
+                />
               </div>
             </div>
           );

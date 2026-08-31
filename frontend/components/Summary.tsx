@@ -5,8 +5,8 @@ export default async function Summary() {
   let profile = null;
   try {
     profile = await getProfile();
-  } catch (err) {
-    console.error("Failed to load profile details in Summary:", err);
+  } catch {
+    // API offline during build, fallback gracefully
   }
 
   if (!profile) {

@@ -10,8 +10,8 @@ export default async function Hero() {
   let profile = null;
   try {
     profile = await getProfile();
-  } catch (err) {
-    console.error("Failed to load profile details in Hero:", err);
+  } catch {
+    // API offline during build, fallback gracefully
   }
 
   if (!profile) {
@@ -19,7 +19,6 @@ export default async function Hero() {
   }
 
   const imageUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/uploads/${profile.avatar}`;
-  console.log(imageUrl)
   const resumeUrl = profile.resume
     ? `${process.env.NEXT_PUBLIC_SERVER_URL}/uploads/${profile.resume}`
     : "#";
