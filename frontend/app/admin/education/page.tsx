@@ -27,6 +27,7 @@ interface CertificationItem {
   description?: string;
   url?: string;
   order?: number;
+  coverImage?: string;
 }
 
 interface CourseItem {
@@ -161,6 +162,8 @@ export default function EducationCertsAdmin() {
   const [issuer, setIssuer] = useState("");
   const [certDesc, setCertDesc] = useState("");
   const [certUrl, setCertUrl] = useState("");
+  const [certCoverFile, setCertCoverFile] = useState<File | null>(null);
+  const [certOrder, setCertOrder] = useState(0);
 
   // Form states - Course
   const [showCourseForm, setShowCourseForm] = useState(false);
@@ -270,6 +273,8 @@ export default function EducationCertsAdmin() {
     setIssuer(cert.issuer);
     setCertDesc(cert.description || "");
     setCertUrl(cert.url || "");
+    setCertOrder(cert.order || 0);
+    setCertCoverFile(null);
     setShowCertForm(true);
   }
 
@@ -279,6 +284,8 @@ export default function EducationCertsAdmin() {
     setIssuer("");
     setCertDesc("");
     setCertUrl("");
+    setCertOrder(0);
+    setCertCoverFile(null);
     setShowCertForm(false);
   }
 
@@ -289,21 +296,26 @@ export default function EducationCertsAdmin() {
       return;
     }
 
+    const payload = new FormData();
+    payload.append("name", certName);
+    payload.append("issuer", issuer);
+    payload.append("description", certDesc);
+    payload.append("url", certUrl);
+    payload.append("order", String(certOrder));
+
+    if (certCoverFile) {
+      payload.append("coverImage", certCoverFile);
+    }
+
     try {
       if (certId) {
-        await api.patch(`/certifications/${certId}`, {
-          name: certName,
-          issuer,
-          description: certDesc,
-          url: certUrl,
+        await api.patch(`/certifications/${certId}`, payload, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
         toast.success("Certification updated successfully!");
       } else {
-        await api.post("/certifications", {
-          name: certName,
-          issuer,
-          description: certDesc,
-          url: certUrl,
+        await api.post("/certifications", payload, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
         toast.success("Certification created successfully!");
       }
@@ -582,12 +594,46 @@ export default function EducationCertsAdmin() {
                   />
                 </div>
 
+                <div>
+                  <Label htmlFor="certCover" className="mb-1.5 block text-xs text-zinc-500 font-medium">Certificate Cover Image</Label>
+                  <div className="flex items-center gap-4">
+                    <label
+                      htmlFor="certCover"
+                      className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-700 bg-transparent px-3 py-2 text-xs text-zinc-300 hover:border-lime-400 hover:text-lime-400 transition-colors"
+                    >
+                      <Upload className="h-3.5 w-3.5" /> {certCoverFile ? "Change Cover" : "Upload Certificate Cover"}
+                    </label>
+                    <input
+                      id="certCover"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setCertCoverFile(e.target.files?.[0] || null)}
+                      className="hidden"
+                    />
+                    {certCoverFile && (
+                      <span className="text-xs text-lime-400 font-medium truncate max-w-[180px]">{certCoverFile.name}</span>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="certOrder" className="mb-1.5 block text-xs text-zinc-500 font-medium">Display Order</Label>
+                  <Input
+                    id="certOrder"
+                    type="number"
+                    value={certOrder}
+                    onChange={(e) => setCertOrder(Number(e.target.value))}
+                    className="border-zinc-800 bg-zinc-900 text-white focus-visible:ring-lime-400"
+                  />
+                </div>
+
                 <div className="sm:col-span-2">
                   <Label htmlFor="certUrl" className="mb-1.5 block text-xs text-zinc-500 font-medium">Credential URL Link</Label>
                   <Input
                     id="certUrl"
                     value={certUrl}
                     onChange={(e) => setCertUrl(e.target.value)}
+                    placeholder="https://..."
                     className="border-zinc-800 bg-zinc-900 text-white focus-visible:ring-lime-400"
                   />
                 </div>
@@ -616,53 +662,75 @@ export default function EducationCertsAdmin() {
           </Card>
         )}
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {certifications.map((cert, index) => (
-            <Card
-              key={cert._id}
-              draggable
-              onDragStart={() => handleDragStartCert(index)}
-              onDragOver={handleDragOver}
-              onDrop={() => handleDropCert(index)}
-              className={`border-zinc-800 bg-zinc-900/40 backdrop-blur-sm flex flex-col justify-between cursor-grab active:cursor-grabbing transition-all duration-200 ${
-                draggedCertIndex === index ? "opacity-40 scale-[0.98] border-lime-400" : ""
-              }`}
-            >
-              <div className="p-5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="font-display text-base font-bold text-white">{cert.name}</h4>
-                    <p className="text-xs text-lime-400 mt-1">{cert.issuer}</p>
-                  </div>
-                  {cert.url && (
-                    <a
-                      href={cert.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-zinc-500 hover:text-lime-400 transition-colors"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  )}
-                </div>
-                {cert.description && (
-                  <p className="text-xs text-zinc-400 mt-3 leading-relaxed">{cert.description}</p>
-                )}
-              </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {certifications.map((cert, index) => {
+            const coverUrl = cert.coverImage
+              ? `${serverUrl}/uploads/certifications/${cert.coverImage}`
+              : "";
 
-              <div className="flex gap-2 p-5 pt-0 justify-end border-t border-zinc-900/60 mt-3">
-                <Button type="button" variant="outline" onClick={() => handleEditCert(cert)} className="border-zinc-700 bg-transparent text-zinc-400 hover:text-white" size="icon">
-                  <Edit2 className="h-4 w-4" />
-                </Button>
-                <Button type="button" variant="outline" onClick={() => handleDeleteCert(cert._id)} className="border-zinc-700 bg-transparent text-zinc-400 hover:border-red-400/50 hover:text-red-400" size="icon">
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </Card>
-          ))}
+            return (
+              <Card
+                key={cert._id}
+                draggable
+                onDragStart={() => handleDragStartCert(index)}
+                onDragOver={handleDragOver}
+                onDrop={() => handleDropCert(index)}
+                className={`border-zinc-800 bg-zinc-900/40 backdrop-blur-sm flex flex-col justify-between overflow-hidden cursor-grab active:cursor-grabbing transition-all duration-200 ${
+                  draggedCertIndex === index ? "opacity-40 scale-[0.98] border-lime-400" : ""
+                }`}
+              >
+                <div>
+                  {coverUrl ? (
+                    <div className="relative h-44 sm:h-48 w-full overflow-hidden border-b border-zinc-800 bg-zinc-950">
+                      <img
+                        src={coverUrl}
+                        alt={`${cert.name} cover`}
+                        className="h-full w-full object-cover object-top transition-transform duration-300 hover:scale-105"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex h-44 sm:h-48 w-full items-center justify-center border-b border-zinc-800 bg-zinc-950/60 text-xs text-zinc-600">
+                      No cover image uploaded
+                    </div>
+                  )}
+
+                  <div className="p-5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h4 className="font-display text-base font-bold text-white">{cert.name}</h4>
+                        <p className="text-xs text-lime-400 mt-1">{cert.issuer}</p>
+                      </div>
+                      {cert.url && (
+                        <a
+                          href={cert.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-zinc-500 hover:text-lime-400 transition-colors flex-shrink-0 p-1"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      )}
+                    </div>
+                    {cert.description && (
+                      <p className="text-xs text-zinc-400 mt-3 leading-relaxed">{cert.description}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex gap-2 p-5 pt-0 justify-end border-t border-zinc-900/60 mt-3">
+                  <Button type="button" variant="outline" onClick={() => handleEditCert(cert)} className="border-zinc-700 bg-transparent text-zinc-400 hover:text-white" size="icon">
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => handleDeleteCert(cert._id)} className="border-zinc-700 bg-transparent text-zinc-400 hover:border-red-400/50 hover:text-red-400" size="icon">
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </Card>
+            );
+          })}
 
           {certifications.length === 0 && !showCertForm && (
-            <div className="sm:col-span-2 rounded-lg border border-dashed border-zinc-800 p-8 text-center text-zinc-500">
+            <div className="sm:col-span-2 lg:col-span-3 rounded-lg border border-dashed border-zinc-800 p-8 text-center text-zinc-500">
               No certifications recorded.
             </div>
           )}

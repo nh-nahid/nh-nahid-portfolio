@@ -49,6 +49,7 @@ export interface Certification {
   order: number;
   url?: string;
   description?: string;
+  coverImage?: string;
 }
 
 export interface Course {
