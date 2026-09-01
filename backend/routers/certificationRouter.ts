@@ -6,6 +6,7 @@ import {
   deleteCertification,
 } from "../controllers/certificationController.js";
 import { checkLogin } from "../middlewares/checkLogin.js";
+import { certificationCoverUpload } from "../middlewares/certification/certificationCoverUpload.js";
 
 const router = Router();
 
@@ -13,8 +14,8 @@ const router = Router();
 router.get("/", getCertifications);
 
 // Protected CRUD routes
-router.post("/", checkLogin, createCertification);
-router.patch("/:id", checkLogin, updateCertification);
+router.post("/", checkLogin, certificationCoverUpload, createCertification);
+router.patch("/:id", checkLogin, certificationCoverUpload, updateCertification);
 router.delete("/:id", checkLogin, deleteCertification);
 
 export default router;

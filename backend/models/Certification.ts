@@ -5,6 +5,8 @@ export interface ICertification extends Document {
   issuer: string;
   description: string;
   url: string;
+  coverImage?: string;
+  order?: number;
 }
 
 const certificationSchema = new Schema<ICertification>(
@@ -30,6 +32,16 @@ const certificationSchema = new Schema<ICertification>(
       type: String,
       default: "",
       trim: true,
+    },
+
+    coverImage: {
+      type: String,
+      default: "",
+    },
+
+    order: {
+      type: Number,
+      default: 0,
     },
   },
   {

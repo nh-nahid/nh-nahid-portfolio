@@ -1,10 +1,14 @@
 import Certification from "../models/Certification.js";
+import { deleteUploadFile } from "../utils/file.js";
 // =======================
 // GET ALL CERTIFICATIONS
 // =======================
 export const getCertifications = async (_req, res, next) => {
     try {
-        const certifications = await Certification.find().sort({ createdAt: 1 });
+        const certifications = await Certification.find().sort({
+            order: 1,
+            createdAt: -1,
+        });
         return res.status(200).json({
             success: true,
             message: "Certifications fetched successfully",
@@ -21,7 +25,7 @@ export const getCertifications = async (_req, res, next) => {
 // =======================
 export const createCertification = async (req, res, next) => {
     try {
-        const { name, issuer, description, url } = req.body;
+        const { name, issuer, description, url, order } = req.body;
         if (!name || !issuer) {
             return res.status(400).json({
                 success: false,
@@ -33,6 +37,8 @@ export const createCertification = async (req, res, next) => {
             issuer,
             description: description ?? "",
             url: url ?? "",
+            order: order !== undefined ? Number(order) : 0,
+            coverImage: req.file?.filename || "",
         });
         return res.status(201).json({
             success: true,
@@ -49,7 +55,6 @@ export const createCertification = async (req, res, next) => {
 // =======================
 export const updateCertification = async (req, res, next) => {
     try {
-        const { name, issuer, description, url } = req.body;
         const certification = await Certification.findById(req.params.id);
         if (!certification) {
             return res.status(404).json({
@@ -57,10 +62,21 @@ export const updateCertification = async (req, res, next) => {
                 message: "Certification not found",
             });
         }
+        const { name, issuer, description, url, order } = req.body;
+        // Delete and replace cover image if uploaded
+        if (req.file) {
+            if (certification.coverImage) {
+                deleteUploadFile("certifications/" + certification.coverImage);
+            }
+            certification.coverImage = req.file.filename;
+        }
         certification.name = name ?? certification.name;
         certification.issuer = issuer ?? certification.issuer;
         certification.description = description ?? certification.description;
         certification.url = url ?? certification.url;
+        if (order !== undefined) {
+            certification.order = Number(order);
+        }
         await certification.save();
         return res.status(200).json({
             success: true,
@@ -77,13 +93,17 @@ export const updateCertification = async (req, res, next) => {
 // =======================
 export const deleteCertification = async (req, res, next) => {
     try {
-        const certification = await Certification.findByIdAndDelete(req.params.id);
+        const certification = await Certification.findById(req.params.id);
         if (!certification) {
             return res.status(404).json({
                 success: false,
                 message: "Certification not found",
             });
         }
+        if (certification.coverImage) {
+            deleteUploadFile("certifications/" + certification.coverImage);
+        }
+        await certification.deleteOne();
         return res.status(200).json({
             success: true,
             message: "Certification deleted successfully",

@@ -20,6 +20,14 @@ const certificationSchema = new Schema({
         default: "",
         trim: true,
     },
+    coverImage: {
+        type: String,
+        default: "",
+    },
+    order: {
+        type: Number,
+        default: 0,
+    },
 }, {
     timestamps: true,
 });
