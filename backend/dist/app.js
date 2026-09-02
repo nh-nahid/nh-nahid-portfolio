@@ -44,6 +44,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan("dev"));
+// Keep-Alive & Health Check Endpoints (zero DB overhead, instant 200 response)
+app.get("/ping", (_req, res) => {
+    res.status(200).send("pong");
+});
+app.get("/health", (_req, res) => {
+    res.status(200).json({
+        status: "ok",
+        uptime: Math.floor(process.uptime()),
+        timestamp: new Date().toISOString(),
+    });
+});
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/profile", profileRouter);
 app.use("/api/v1/skills", skillRouter);
