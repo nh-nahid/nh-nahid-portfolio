@@ -36,15 +36,26 @@ export default function Preloader({
   const done = progress >= 100;
 
   useEffect(() => {
+    // Fire a lightweight warm-up ping immediately in background
+    const serverBase = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5050";
+    fetch(`${serverBase}/ping`).catch(() => {});
+
     async function loadQuote() {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5050"}/api/v1/profile`);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+        const res = await fetch(`${serverBase}/api/v1/profile`, {
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+
         const result = await res.json();
         if (result.data?.subtitle) {
           setQuote(result.data.subtitle);
         }
-      } catch (err) {
-        console.error("Failed to load preloader quote", err);
+      } catch {
+        // Fallback quote is already active, keep preloader fast and fluid
       }
     }
     loadQuote();
