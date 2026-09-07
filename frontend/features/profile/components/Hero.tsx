@@ -18,9 +18,17 @@ export default async function Hero() {
     return null;
   }
 
-  const imageUrl = `${process.env.NEXT_PUBLIC_SERVER_URL}/uploads/${profile.avatar}`;
+  const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5050";
+  const imageUrl = profile.avatar
+    ? (profile.avatar.startsWith("http")
+        ? profile.avatar
+        : `${serverUrl}/uploads/${profile.avatar}`)
+    : "/nahid-chat.png";
+
   const resumeUrl = profile.resume
-    ? `${process.env.NEXT_PUBLIC_SERVER_URL}/uploads/${profile.resume}`
+    ? (profile.resume.startsWith("http")
+        ? profile.resume
+        : `${serverUrl}/uploads/${profile.resume}`)
     : "#";
 
   return (

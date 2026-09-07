@@ -41,10 +41,13 @@ export default async function Stack() {
 
   const orbitTools = home?.skills?.[0]?.orbitTools ?? [];
 
+  const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5050";
   const avatar =
     home?.profile?.avatar
-      ? `${process.env.NEXT_PUBLIC_SERVER_URL}/uploads/${home.profile.avatar}`
-      : "/nahid.jpeg";
+      ? (home.profile.avatar.startsWith("http")
+          ? home.profile.avatar
+          : `${serverUrl}/uploads/${home.profile.avatar}`)
+      : "/nahid-chat.png";
 
   return (
     <section
