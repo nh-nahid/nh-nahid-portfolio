@@ -38,7 +38,7 @@ const connectDB = async () => {
         email: 'nahid4510@gmail.com',
         phone: '+8801617121519',
         location: 'Dhaka, Bangladesh',
-        avatar: 'avatars/nahid.jpeg',
+        avatar: 'avatars/nahid-chat.png',
         resume: 'resumes/Nahid_Hossain_Resume.pdf',
         github: 'https://github.com/nh-nahid',
         linkedin: 'https://linkedin.com/in/nahid-nh',
