@@ -64,7 +64,7 @@ export default async function Hero() {
                 target="_blank"
                 rel="noopener noreferrer"
                 download
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-zinc-700 bg-transparent px-4 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-lime-400 hover:text-lime-400"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-zinc-700 bg-transparent px-4 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-lime-400 hover:text-lime-400"
               >
                 <Download className="h-4 w-4" />
                 Download CV

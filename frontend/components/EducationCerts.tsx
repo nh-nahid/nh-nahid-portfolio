@@ -77,7 +77,7 @@ export default async function EducationCerts() {
                 >
                   <CardContent className="p-5">
                     <div className="mb-5 flex items-center justify-between gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 flex-shrink-0">
+                      <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded border border-zinc-800 bg-zinc-900 flex-shrink-0">
                         {logoSrc ? (
                           <img
                             src={logoSrc}

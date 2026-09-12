@@ -48,8 +48,11 @@ import {
   SiSass,
   SiBootstrap,
   SiStripe,
+  SiShadcnui,
+  SiMeta,
+  SiCloudinary,
 } from "react-icons/si";
-import { FaCss3Alt, FaAws } from "react-icons/fa6";
+import { FaCss3Alt, FaAws, FaWhatsapp, FaFilePdf, FaCreditCard, FaFingerprint } from "react-icons/fa6";
 import { TbApi } from "react-icons/tb";
 import { Code2 } from "lucide-react";
 
@@ -152,6 +155,35 @@ const TECH_MAP: Record<string, TechMeta> = {
   cpp: { icon: SiCplusplus, color: "#00599C" },
   "c/c++": { icon: SiCplusplus, color: "#00599C" },
   wordpress: { icon: SiWordpress, color: "#21759B" },
+
+  // New requested tech items
+  "react-window": { icon: SiReact, color: "#61DAFB" },
+  "react window": { icon: SiReact, color: "#61DAFB" },
+  "reactwindow": { icon: SiReact, color: "#61DAFB" },
+
+  "zkteco adms": { icon: FaFingerprint, color: "#00A4E4" },
+  zkteco: { icon: FaFingerprint, color: "#00A4E4" },
+  adms: { icon: FaFingerprint, color: "#00A4E4" },
+
+  "shadcn/ui": { icon: SiShadcnui, color: "#FFFFFF" },
+  "shadcn ui": { icon: SiShadcnui, color: "#FFFFFF" },
+  shadcn: { icon: SiShadcnui, color: "#FFFFFF" },
+  "shadcnui": { icon: SiShadcnui, color: "#FFFFFF" },
+
+  "meta whatsapp api": { icon: FaWhatsapp, color: "#25D366" },
+  "whatsapp api": { icon: FaWhatsapp, color: "#25D366" },
+  "meta whatsapp": { icon: FaWhatsapp, color: "#25D366" },
+  whatsapp: { icon: FaWhatsapp, color: "#25D366" },
+
+  sslcommerz: { icon: FaCreditCard, color: "#E31D27" },
+  "ssl commerz": { icon: FaCreditCard, color: "#E31D27" },
+  "sslcommerz payment": { icon: FaCreditCard, color: "#E31D27" },
+
+  pdfkit: { icon: FaFilePdf, color: "#EC1C24" },
+  "pdf kit": { icon: FaFilePdf, color: "#EC1C24" },
+  pdf: { icon: FaFilePdf, color: "#EC1C24" },
+
+  cloudinary: { icon: SiCloudinary, color: "#3448C5" },
 };
 
 interface TechIconProps {

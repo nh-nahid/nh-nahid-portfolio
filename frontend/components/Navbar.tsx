@@ -138,7 +138,7 @@ export default function Navbar() {
         <Button
           onClick={() => go("contact")}
           className="
-            hidden rounded-xl
+            hidden rounded-lg
             py-4
             px-6
             bg-lime-400
@@ -147,7 +147,7 @@ export default function Navbar() {
             md:inline-flex
           "
         >
-          Hire Me
+          Let's Ship It
         </Button>
 
 
@@ -211,7 +211,7 @@ export default function Navbar() {
                   hover:bg-lime-300
                 "
               >
-                Hire Me
+                Let's Ship It
               </Button>
 
 

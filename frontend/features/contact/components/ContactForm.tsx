@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, ChangeEvent } from "react";
-import { Send } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -20,13 +19,6 @@ interface ContactFormState {
   message: string;
 }
 
-/* ---------------------------------------------------------------
-   CONTACT FORM
-   Every Input/Textarea/Label below gets explicit border, bg, and
-   text-color classes instead of relying on shadcn's --input /
-   --foreground theme tokens, so it can't render differently
-   depending on your globals.css theme setup.
-----------------------------------------------------------------*/
 export default function ContactForm() {
   const [form, setForm] = useState<ContactFormState>({
     name: "",
@@ -38,19 +30,15 @@ export default function ContactForm() {
   const [loading, setLoading] = useState(false);
 
   function handleChange(e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       setLoading(true);
       await sendMessage(form);
-      toast.success("Message sent successfully.");
+      toast.success("Message sent! I'll get back to you soon.");
       setForm({ name: "", email: "", subject: "", message: "" });
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -63,13 +51,36 @@ export default function ContactForm() {
     }
   };
 
+  const inputCls =
+    "border border-zinc-800 bg-zinc-900/80 text-white placeholder:text-zinc-600 " +
+    "focus-visible:border-lime-400/60 focus-visible:ring-1 focus-visible:ring-lime-400/30 " +
+    "transition-colors duration-200 rounded-lg";
+
+  const labelCls = "mb-1.5 block text-[11px] uppercase tracking-widest text-zinc-500";
+
   return (
-    <Card className="border border-zinc-800 bg-zinc-950/60 text-white backdrop-blur-sm">
-      <CardContent className="p-6 sm:p-8">
-        <form onSubmit={handleSubmit}>
+    /* Gradient border wrapper */
+    <div className="relative rounded-2xl p-px">
+      {/* Subtle gradient border */}
+      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-lime-400/20 via-zinc-800/20 to-zinc-700/10" />
+
+      <div className="relative rounded-2xl border border-zinc-800 bg-zinc-950/80 p-6 backdrop-blur-sm sm:p-8">
+
+        {/* Form header */}
+        <div className="mb-6">
+          <h3 className="font-display text-lg font-semibold text-white">
+            Send a message
+          </h3>
+          <p className="mt-1 text-xs text-zinc-500">
+            Fill out the form below and I&apos;ll respond as soon as possible.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name + Email row */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <Label htmlFor="name" className="mb-1.5 block text-xs text-zinc-500">
+              <Label htmlFor="name" className={labelCls}>
                 Full Name
               </Label>
               <Input
@@ -79,12 +90,12 @@ export default function ContactForm() {
                 placeholder="Your name"
                 value={form.name}
                 onChange={handleChange}
-                className="border border-zinc-800 bg-zinc-900 text-white placeholder:text-zinc-500 focus-visible:border-lime-400 focus-visible:ring-lime-400"
+                className={inputCls}
               />
             </div>
 
             <div>
-              <Label htmlFor="email" className="mb-1.5 block text-xs text-zinc-500">
+              <Label htmlFor="email" className={labelCls}>
                 Email
               </Label>
               <Input
@@ -95,52 +106,64 @@ export default function ContactForm() {
                 placeholder="you@example.com"
                 value={form.email}
                 onChange={handleChange}
-                className="border border-zinc-800 bg-zinc-900 text-white placeholder:text-zinc-500 focus-visible:border-lime-400 focus-visible:ring-lime-400"
-              />
-            </div>
-
-            <div className="sm:col-span-2">
-              <Label htmlFor="subject" className="mb-1.5 block text-xs text-zinc-500">
-                Subject
-              </Label>
-              <Input
-                id="subject"
-                name="subject"
-                required
-                placeholder="Project inquiry"
-                value={form.subject}
-                onChange={handleChange}
-                className="border border-zinc-800 bg-zinc-900 text-white placeholder:text-zinc-500 focus-visible:border-lime-400 focus-visible:ring-lime-400"
-              />
-            </div>
-
-            <div className="sm:col-span-2">
-              <Label htmlFor="message" className="mb-1.5 block text-xs text-zinc-500">
-                Message
-              </Label>
-              <Textarea
-                id="message"
-                name="message"
-                rows={5}
-                required
-                placeholder="Tell me about your project..."
-                value={form.message}
-                onChange={handleChange}
-                className="resize-none border border-zinc-800 bg-zinc-900 text-white placeholder:text-zinc-500 focus-visible:border-lime-400 focus-visible:ring-lime-400"
+                className={inputCls}
               />
             </div>
           </div>
 
+          {/* Subject */}
+          <div>
+            <Label htmlFor="subject" className={labelCls}>
+              Subject
+            </Label>
+            <Input
+              id="subject"
+              name="subject"
+              required
+              placeholder="What's this about?"
+              value={form.subject}
+              onChange={handleChange}
+              className={inputCls}
+            />
+          </div>
+
+          {/* Message */}
+          <div>
+            <Label htmlFor="message" className={labelCls}>
+              Message
+            </Label>
+            <Textarea
+              id="message"
+              name="message"
+              rows={5}
+              required
+              placeholder="Tell me about your project, idea, or opportunity..."
+              value={form.message}
+              onChange={handleChange}
+              className={`resize-none ${inputCls}`}
+            />
+          </div>
+
+          {/* Submit button */}
           <Button
             type="submit"
             disabled={loading}
-            className="mt-5 rounded-full bg-lime-400 text-zinc-950 hover:bg-lime-300 disabled:opacity-60"
+            className="group mt-2 flex w-full items-center justify-center gap-2 rounded-full bg-lime-400 py-3 text-sm font-semibold text-zinc-950 transition-all duration-200 hover:bg-lime-300 hover:shadow-[0_0_20px_rgba(163,230,53,0.25)] disabled:opacity-60"
           >
-            <Send className="mr-2 h-4 w-4" />
-            {loading ? "Sending..." : "Send Message"}
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <Send className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                Send Message
+              </>
+            )}
           </Button>
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
