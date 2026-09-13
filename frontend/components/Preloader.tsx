@@ -26,7 +26,7 @@ interface PreloaderProps {
 }
 
 export default function Preloader({
-  minDuration = 500,
+  minDuration = 1000,
 }: PreloaderProps) {
   const [progress, setProgress] = useState(0);
   const [hidden, setHidden] = useState(false);
@@ -35,70 +35,33 @@ export default function Preloader({
   const done = progress >= 100;
 
   useEffect(() => {
-    // 1. Session Storage Bypass: If user already visited in this session, skip preloader immediately
-    if (typeof window !== "undefined" && sessionStorage.getItem("has_seen_preloader")) {
-      setHidden(true);
-      setProgress(100);
-      return;
-    }
-
-    // 2. Fire background keep-alive ping immediately
+    // Fire background keep-alive ping immediately
     const serverBase = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5050";
     fetch(`${serverBase}/ping`).catch(() => {});
-
-    // Periodic background ping every 5 minutes while user is on site
-    const intervalId = setInterval(() => {
-      fetch(`${serverBase}/ping`).catch(() => {});
-    }, 5 * 60 * 1000);
-
-    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
-    if (hidden) return;
-
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
     if (reduceMotion) {
-      const id = requestAnimationFrame(() => {
-        setProgress(100);
-      });
-      return () => cancelAnimationFrame(id);
+      setProgress(100);
+      return;
     }
 
     const start = performance.now();
     let raf = 0;
-    let loaded =
-      document.readyState === "complete" ||
-      document.readyState === "interactive";
-
-    const setLoaded = () => {
-      loaded = true;
-    };
-
-    window.addEventListener("load", setLoaded);
-    window.addEventListener("DOMContentLoaded", setLoaded);
-
-    // Hard safety timeout: Never wait more than 700ms total!
-    const forceLoadTimeout = setTimeout(() => {
-      loaded = true;
-    }, 700);
 
     const tick = (now: number) => {
       const elapsed = now - start;
-      const t = Math.min(elapsed / minDuration, 1);
-      const eased = 1 - Math.pow(1 - t, 3);
+      const progressRatio = Math.min(elapsed / minDuration, 1);
+      
+      // Easing cubic out: fast smooth counter 0% -> 100% in exactly minDuration
+      const eased = 1 - Math.pow(1 - progressRatio, 3);
+      const target = Math.min(100, Math.floor(eased * 100));
 
-      let target = eased * 90;
-
-      // Accelerate straight to 100% if loaded or hard timeout reached or minDuration passed
-      if (loaded || elapsed >= minDuration) {
-        target = 100;
-      }
-
-      setProgress((previous) => Math.max(previous, target));
+      setProgress(target);
 
       if (target < 100) {
         raf = requestAnimationFrame(tick);
@@ -109,23 +72,15 @@ export default function Preloader({
 
     return () => {
       cancelAnimationFrame(raf);
-      clearTimeout(forceLoadTimeout);
-      window.removeEventListener("load", setLoaded);
-      window.removeEventListener("DOMContentLoaded", setLoaded);
     };
-  }, [minDuration, hidden]);
+  }, [minDuration]);
 
   useEffect(() => {
     if (!done) return;
 
-    // Mark preloader seen in session storage
-    if (typeof window !== "undefined") {
-      sessionStorage.setItem("has_seen_preloader", "true");
-    }
-
     const timer = setTimeout(() => {
       setHidden(true);
-    }, 350);
+    }, 400);
 
     return () => clearTimeout(timer);
   }, [done]);
