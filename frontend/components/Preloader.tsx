@@ -4,10 +4,9 @@ import React, { useEffect, useMemo, useState } from "react";
 
 const STATUS_MESSAGES = [
   { at: 0, text: "Booting up" },
-  { at: 20, text: "Compiling components" },
-  { at: 45, text: "Warming up the mesh" },
-  { at: 70, text: "Optimizing renders" },
-  { at: 92, text: "Almost there" },
+  { at: 25, text: "Compiling components" },
+  { at: 55, text: "Optimizing renders" },
+  { at: 85, text: "Almost there" },
 ];
 
 function statusFor(progress: number): string {
@@ -27,16 +26,23 @@ interface PreloaderProps {
 }
 
 export default function Preloader({
-  minDuration = 1100,
+  minDuration = 500,
 }: PreloaderProps) {
   const [progress, setProgress] = useState(0);
   const [hidden, setHidden] = useState(false);
-  const [quote, setQuote] = useState("Code with clarity. Ship with confidence.");
+  const [quote] = useState("Code with clarity. Ship with confidence.");
 
   const done = progress >= 100;
 
   useEffect(() => {
-    // Fire a lightweight warm-up ping immediately in background
+    // 1. Session Storage Bypass: If user already visited in this session, skip preloader immediately
+    if (typeof window !== "undefined" && sessionStorage.getItem("has_seen_preloader")) {
+      setHidden(true);
+      setProgress(100);
+      return;
+    }
+
+    // 2. Fire background keep-alive ping immediately
     const serverBase = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5050";
     fetch(`${serverBase}/ping`).catch(() => {});
 
@@ -45,30 +51,12 @@ export default function Preloader({
       fetch(`${serverBase}/ping`).catch(() => {});
     }, 5 * 60 * 1000);
 
-    async function loadQuote() {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
-
-        const res = await fetch(`${serverBase}/api/v1/profile`, {
-          signal: controller.signal,
-        });
-        clearTimeout(timeoutId);
-
-        const result = await res.json();
-        if (result.data?.subtitle) {
-          setQuote(result.data.subtitle);
-        }
-      } catch {
-        // Fallback quote is already active, keep preloader fast and fluid
-      }
-    }
-    loadQuote();
-
     return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
+    if (hidden) return;
+
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
@@ -77,31 +65,36 @@ export default function Preloader({
       const id = requestAnimationFrame(() => {
         setProgress(100);
       });
-
       return () => cancelAnimationFrame(id);
     }
 
     const start = performance.now();
-
     let raf = 0;
-    let loaded = document.readyState === "complete";
+    let loaded =
+      document.readyState === "complete" ||
+      document.readyState === "interactive";
 
-    const onLoad = () => {
+    const setLoaded = () => {
       loaded = true;
     };
 
-    window.addEventListener("load", onLoad);
+    window.addEventListener("load", setLoaded);
+    window.addEventListener("DOMContentLoaded", setLoaded);
+
+    // Hard safety timeout: Never wait more than 700ms total!
+    const forceLoadTimeout = setTimeout(() => {
+      loaded = true;
+    }, 700);
 
     const tick = (now: number) => {
       const elapsed = now - start;
-
       const t = Math.min(elapsed / minDuration, 1);
-
       const eased = 1 - Math.pow(1 - t, 3);
 
       let target = eased * 90;
 
-      if (loaded && elapsed >= minDuration) {
+      // Accelerate straight to 100% if loaded or hard timeout reached or minDuration passed
+      if (loaded || elapsed >= minDuration) {
         target = 100;
       }
 
@@ -116,16 +109,23 @@ export default function Preloader({
 
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("load", onLoad);
+      clearTimeout(forceLoadTimeout);
+      window.removeEventListener("load", setLoaded);
+      window.removeEventListener("DOMContentLoaded", setLoaded);
     };
-  }, [minDuration]);
+  }, [minDuration, hidden]);
 
   useEffect(() => {
     if (!done) return;
 
+    // Mark preloader seen in session storage
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("has_seen_preloader", "true");
+    }
+
     const timer = setTimeout(() => {
       setHidden(true);
-    }, 600);
+    }, 350);
 
     return () => clearTimeout(timer);
   }, [done]);
@@ -139,7 +139,7 @@ export default function Preloader({
 
   return (
     <div
-      className={`fixed inset-0 z-[999] flex flex-col items-center justify-center overflow-hidden bg-zinc-950 transition-all duration-[500ms] ease-[cubic-bezier(0.65,0,0.35,1)] ${
+      className={`fixed inset-0 z-[999] flex flex-col items-center justify-center overflow-hidden bg-zinc-950 transition-all duration-[400ms] ease-[cubic-bezier(0.65,0,0.35,1)] ${
         done
           ? "pointer-events-none translate-y-full opacity-0"
           : "translate-y-0 opacity-100"

@@ -87,7 +87,7 @@ export default async function Stack() {
         >
           <div className="marquee-mask overflow-hidden">
             <div className="marquee-track flex w-max gap-3">
-              {[...skills.toolbox, ...skills.toolbox].map(
+              {[...skills.toolbox, ...skills.toolbox, ...skills.toolbox, ...skills.toolbox].map(
                 (tool, index) => (
                   <Badge
                     key={`${tool}-${index}`}
