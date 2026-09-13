@@ -2,6 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import fs from "fs";
 import path from "path";
 import Profile from "../models/Profile.js";
+import Experience from "../models/Experience.js";
+import Project from "../models/Project.js";
+import Skill from "../models/Skill.js";
+import Course from "../models/Course.js";
+import Education from "../models/Education.js";
+import Certification from "../models/Certification.js";
 import { deleteUploadFile } from "../utils/file.js";
 
 // =======================
@@ -311,6 +317,42 @@ export const downloadResume = async (
       "Nahid-Hossain-Resume.pdf"
     );
 
+  } catch (error) {
+    next(error);
+  }
+};
+
+// =======================
+// EXPORT PORTFOLIO JSON
+// =======================
+export const exportPortfolioJSON = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const profile = await Profile.findOne();
+    const experiences = await Experience.find().sort({ order: 1, startDate: -1 });
+    const projects = await Project.find().sort({ order: 1 });
+    const skills = await Skill.findOne();
+    const courses = await Course.find().sort({ order: 1 });
+    const educations = await Education.find().sort({ order: 1 });
+    const certifications = await Certification.find().sort({ order: 1 });
+
+    const exportData = {
+      exportedAt: new Date().toISOString(),
+      profile: profile || {},
+      experiences: experiences || [],
+      projects: projects || [],
+      skills: skills || {},
+      courses: courses || [],
+      educations: educations || [],
+      certifications: certifications || [],
+    };
+
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Content-Disposition", 'attachment; filename="portfolio_data.json"');
+    return res.status(200).json(exportData);
   } catch (error) {
     next(error);
   }

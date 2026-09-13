@@ -8,6 +8,7 @@ import {
   updateResume,
   deleteResume,
   downloadResume,
+  exportPortfolioJSON,
 } from "../controllers/profileController.js";
 
 import { checkLogin } from "../middlewares/checkLogin.js";
@@ -25,6 +26,12 @@ const router = Router();
 router.get(
   "/",
   getProfile
+);
+
+// Export Portfolio JSON
+router.get(
+  "/export-json",
+  exportPortfolioJSON
 );
 
 // =========================

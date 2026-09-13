@@ -10,6 +10,7 @@ export const startKeepAlive = () => {
   const targetUrl =
     process.env.KEEP_ALIVE_URL ||
     process.env.RENDER_EXTERNAL_URL ||
+    process.env.SERVER_URL ||
     (process.env.NODE_ENV === "production"
       ? "https://nh-nahid.onrender.com"
       : null);
@@ -19,8 +20,8 @@ export const startKeepAlive = () => {
     return;
   }
 
-  // Ping every 10 minutes (Render sleeps after 15 minutes of inactivity)
-  const PING_INTERVAL_MS = 10 * 60 * 1000;
+  // Ping every 3 minutes (Render sleeps after 15 minutes of inactivity)
+  const PING_INTERVAL_MS = 3 * 60 * 1000;
   const pingUrl = `${targetUrl.replace(/\/$/, "")}/ping`;
 
   const sendPing = () => {
@@ -33,7 +34,6 @@ export const startKeepAlive = () => {
         } else {
           console.warn(`[KeepAlive] ⚠️ Ping returned status: ${res.statusCode}`);
         }
-        // Consume response data to free up memory
         res.resume();
       });
 
@@ -50,15 +50,14 @@ export const startKeepAlive = () => {
     }
   };
 
-  console.log(`[KeepAlive] 🚀 Service initialized. Pinging ${pingUrl} every 10 minutes.`);
+  console.log(`[KeepAlive] 🚀 Service initialized. Pinging ${pingUrl} continuously every 3 minutes.`);
 
-  // First ping after 30 seconds to let the server finish boot sequence
-  setTimeout(sendPing, 30 * 1000);
+  // First ping after 15 seconds to let the server finish boot sequence
+  setTimeout(sendPing, 15 * 1000);
 
   // Periodic recurring ping
   const interval = setInterval(sendPing, PING_INTERVAL_MS);
 
-  // Prevent this timer from blocking process exit
   if (interval.unref) {
     interval.unref();
   }
