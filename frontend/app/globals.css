@@ -74,7 +74,7 @@
 }
 
 .marquee-track {
-  animation: marquee 50s linear infinite;
+  animation: marquee 80s linear infinite;
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -83,7 +83,7 @@
 
 @media (min-width: 640px) {
   .marquee-track {
-    animation-duration: 40s;
+    animation-duration: 45s;
   }
 }
 
