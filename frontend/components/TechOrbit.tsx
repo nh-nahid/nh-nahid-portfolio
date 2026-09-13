@@ -35,7 +35,7 @@ export default function TechOrbit({
   return (
     <div
       ref={containerRef}
-      className="relative mx-auto aspect-square w-64 sm:w-80 md:w-96"
+      className="relative mx-auto aspect-square w-full max-w-[300px] sm:w-80 sm:max-w-none md:w-96"
     >
       {/* Orbit Rings */}
       <div className="absolute inset-0 rounded-full border border-dashed border-zinc-700" />
@@ -43,7 +43,7 @@ export default function TechOrbit({
 
       {/* Center Image */}
       <div className="absolute inset-0 z-20 flex items-center justify-center">
-        <div className="float-soft h-28 w-28 overflow-hidden rounded-full ring-4 ring-lime-400/40 sm:h-36 sm:w-36 md:h-44 md:w-44">
+        <div className="float-soft h-36 w-36 overflow-hidden rounded-full ring-4 ring-lime-400/40 md:h-44 md:w-44">
           <Image
             src={image}
             alt="Profile"
@@ -62,7 +62,7 @@ export default function TechOrbit({
           return (
             <div
               key={`${tool}-${index}`}
-              className="absolute left-1/2 top-1/2 -ml-5 -mt-5 h-10 w-10 sm:-ml-6 sm:-mt-6 sm:h-12 sm:w-12"
+              className="absolute left-1/2 top-1/2 -ml-6 -mt-6 h-12 w-12"
               style={{
                 transform: `rotate(${angle}deg) translate(${radius}px)`,
               }}

@@ -1,5 +1,6 @@
 import { getProfile } from "@/features/profile/api/profile.api";
 import Reveal from "./Reveal";
+import ExpandableText from "./ExpandableText";
 
 export default async function Summary() {
   let profile = null;
@@ -14,7 +15,7 @@ export default async function Summary() {
   }
 
   return (
-    <section className="mx-auto max-w-4xl px-5 py-24 text-center sm:px-8">
+    <section className="mx-auto max-w-4xl px-5 py-14 sm:py-20 md:py-24 text-center sm:px-8">
       <Reveal>
         <p className="font-mono-custom mb-4 text-xs uppercase tracking-widest text-lime-400">
           About Me
@@ -24,9 +25,11 @@ export default async function Summary() {
           I care about the ten milliseconds nobody notices
         </h2>
 
-        <p className="mt-6 text-base leading-relaxed text-zinc-400 whitespace-pre-line">
-          {profile.about}
-        </p>
+        <ExpandableText
+          text={profile.about}
+          className="mt-6 text-base leading-relaxed text-zinc-400"
+          clampClassName="line-clamp-4 sm:line-clamp-5"
+        />
       </Reveal>
     </section>
   );

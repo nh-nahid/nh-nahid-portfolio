@@ -40,6 +40,11 @@ export default function Preloader({
     const serverBase = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5050";
     fetch(`${serverBase}/ping`).catch(() => {});
 
+    // Periodic background ping every 5 minutes while user is on site
+    const intervalId = setInterval(() => {
+      fetch(`${serverBase}/ping`).catch(() => {});
+    }, 5 * 60 * 1000);
+
     async function loadQuote() {
       try {
         const controller = new AbortController();
@@ -59,6 +64,8 @@ export default function Preloader({
       }
     }
     loadQuote();
+
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {

@@ -20,8 +20,8 @@ export default async function EducationCerts() {
   const certifications = home?.certifications || [];
 
   return (
-    <section className="py-24">
-      <div className="mx-auto flex max-w-6xl flex-col gap-20 px-5 sm:px-8">
+    <section className="py-14 sm:py-20 md:py-24">
+      <div className="mx-auto flex max-w-6xl flex-col gap-12 px-5 sm:gap-16 sm:px-8 md:gap-20">
         {/* Education */}
         <Reveal>
           <p className="font-mono-custom mb-4 text-center text-xs uppercase tracking-widest text-lime-400">
@@ -94,16 +94,16 @@ export default async function EducationCerts() {
                       </span>
                     </div>
 
-                    <h3 className="font-display text-base font-semibold text-white">
+                    <h3 className="font-display line-clamp-2 text-base font-semibold text-white">
                       {course.name}
                     </h3>
 
-                    <p className="mt-1 text-sm text-lime-400">
+                    <p className="mt-1 truncate text-sm text-lime-400">
                       {course.platform}
                     </p>
 
                     {course.description && (
-                      <p className="mt-3 text-xs leading-relaxed text-zinc-400">
+                      <p className="mt-3 line-clamp-3 text-xs leading-relaxed text-zinc-400">
                         {course.description}
                       </p>
                     )}
@@ -136,7 +136,7 @@ export default async function EducationCerts() {
                   className="group flex flex-col overflow-hidden border-zinc-800 bg-zinc-950/60 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-lime-400/40"
                 >
                   {/* Certificate Cover */}
-                  <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-zinc-900 border-b border-zinc-800/80">
+                  <div className="relative h-40 w-full overflow-hidden bg-zinc-900 border-b border-zinc-800/80 sm:h-52">
                     {coverSrc ? (
                       <img
                         src={coverSrc}
@@ -162,11 +162,11 @@ export default async function EducationCerts() {
                   <CardContent className="flex flex-1 flex-col justify-between p-5">
                     <div>
                       <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <h3 className="font-display text-base font-bold text-white transition-colors group-hover:text-lime-400">
+                        <div className="min-w-0">
+                          <h3 className="font-display line-clamp-2 text-base font-bold text-white transition-colors group-hover:text-lime-400">
                             {cert.name}
                           </h3>
-                          <p className="mt-1 text-xs font-medium text-lime-400/90">
+                          <p className="mt-1 truncate text-xs font-medium text-lime-400/90">
                             {cert.issuer}
                           </p>
                         </div>
@@ -185,7 +185,7 @@ export default async function EducationCerts() {
                       </div>
 
                       {cert.description && (
-                        <p className="mt-3 text-xs leading-relaxed text-zinc-400">
+                        <p className="mt-3 line-clamp-3 text-xs leading-relaxed text-zinc-400">
                           {cert.description}
                         </p>
                       )}

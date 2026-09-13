@@ -34,10 +34,10 @@ export default async function Hero() {
   return (
     <section
       id="home"
-      className="relative overflow-hidden pb-12 pt-28 sm:pt-32"
+      className="relative overflow-hidden pb-10 pt-24 sm:pb-12 sm:pt-32"
     >
-      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-16 px-5 sm:px-8 md:grid-cols-2">
-        <Reveal>
+      <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-10 px-5 sm:gap-16 sm:px-8 md:grid-cols-2">
+        <Reveal className="order-2 md:order-none">
           <p className="font-mono-custom mb-4 flex items-center gap-2 text-xs uppercase tracking-widest text-lime-400">
             <Sparkles className="h-3.5 w-3.5" />
             {profile.title} · {profile.location}
@@ -107,11 +107,11 @@ export default async function Hero() {
           </div>
         </Reveal>
 
-        <Reveal delay={150} className="flex justify-center">
-          <div className="float-soft relative">
+        <Reveal delay={150} className="order-1 flex justify-center md:order-none">
+          <div className="float-soft relative mb-4 mt-2 sm:mb-0 sm:mt-0">
             <div className="absolute inset-0 -z-10 rounded-[2.5rem] bg-zinc-500 bg-opacity-20 blur-2xl" />
 
-            <div className="h-72 w-64 overflow-hidden rounded-[2.5rem] border border-zinc-800 bg-zinc-900 sm:h-96 sm:w-80">
+            <div className="h-80 w-64 overflow-hidden rounded-[2rem] border border-zinc-800 bg-zinc-900 sm:h-96 sm:w-80 sm:rounded-[2.5rem]">
               <Image
                 src={imageUrl}
                 alt={profile.name}
@@ -121,12 +121,13 @@ export default async function Hero() {
               />
             </div>
 
-            <div className="absolute -bottom-5 -left-5 rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 shadow-xl">
-              <p className="font-display text-lg font-semibold text-lime-400">
+            {/* On phones the badge stays inside the image edge so it can't push the layout wider than the viewport; from sm it floats outside as designed */}
+            <div className="absolute bottom-3 left-3 rounded-xl border border-zinc-800 bg-zinc-900/90 px-3 py-2 shadow-xl backdrop-blur-sm sm:-bottom-5 sm:-left-5 sm:rounded-2xl sm:bg-zinc-900 sm:px-4 sm:py-3">
+              <p className="font-display text-sm font-semibold text-lime-400 sm:text-lg">
                 4.2s → 0.9s
               </p>
 
-              <p className="text-xs text-zinc-400">LCP improved</p>
+              <p className="text-[10px] text-zinc-400 sm:text-xs">LCP improved</p>
             </div>
           </div>
         </Reveal>

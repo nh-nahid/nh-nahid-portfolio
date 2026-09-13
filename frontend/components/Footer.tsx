@@ -19,14 +19,14 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative z-40 border-t border-zinc-800/60 pb-2">
+    <footer className="relative z-40 border-t border-zinc-800/60 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
       {/* Gradient glow line at top */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-lime-400/30 to-transparent" />
 
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
 
         {/* ── Main footer row — 3 columns */}
-        <div className="grid grid-cols-1 gap-10 py-12 md:grid-cols-3 md:gap-8">
+        <div className="grid grid-cols-1 gap-8 py-10 sm:gap-10 sm:py-12 md:grid-cols-3 md:gap-8">
 
           {/* LEFT — Brand + tagline + socials */}
           <div className="flex flex-col items-center gap-3 md:items-start">
@@ -37,7 +37,7 @@ export default function Footer() {
             <p className="max-w-xs text-center text-xs leading-relaxed text-zinc-500 md:text-left">
               Fullstack Developer crafting fast, scalable, and accessible web experiences.
             </p>
-            <div className="mt-1 flex items-center gap-3">
+            <div className="mt-1 flex flex-wrap items-center justify-center gap-3">
               {SOCIAL_LINKS.map(({ icon: Icon, label, href }) => (
                 <a
                   key={label}
@@ -58,16 +58,17 @@ export default function Footer() {
             <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
               By the numbers
             </p>
-            <div className="flex flex-row items-center gap-2">
+            {/* 2x2 grid on phones so nothing overflows the viewport; single row from sm up */}
+            <div className="grid w-full max-w-[220px] grid-cols-2 gap-2 sm:flex sm:w-auto sm:max-w-none sm:flex-row">
               {STATS.map(({ value, label }) => (
                 <div
                   key={label}
-                  className="flex w-20 flex-col items-center gap-0.5 rounded-lg border border-zinc-800/80 bg-zinc-900/40 py-2.5 text-center"
+                  className="flex min-w-0 flex-col items-center gap-0.5 rounded-lg border border-zinc-800/80 bg-zinc-900/40 px-1 py-2.5 text-center sm:w-20 sm:px-0"
                 >
-                  <span className="font-display text-base font-bold text-lime-400">
+                  <span className="font-display text-sm font-bold text-lime-400 sm:text-base">
                     {value}
                   </span>
-                  <span className="text-[9px] leading-tight text-zinc-500 whitespace-pre-line">
+                  <span className="text-[8px] leading-tight text-zinc-500 whitespace-pre-line sm:text-[9px]">
                     {label}
                   </span>
                 </div>
@@ -83,8 +84,8 @@ export default function Footer() {
         </div>
 
         {/* ── Bottom bar — centered copyright */}
-        <div className="flex items-center justify-center border-t border-zinc-800/60 py-4">
-          <p className="text-[11px] text-zinc-500">
+        <div className="flex items-center justify-center border-t border-zinc-800/60 py-4 pb-6 sm:pb-4">
+          <p className="text-center text-[11px] text-zinc-500">
             © {year} Nahid Hossain. All rights reserved.
           </p>
         </div>

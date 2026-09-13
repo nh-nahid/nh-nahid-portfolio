@@ -1,16 +1,18 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Lock } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 import Reveal from "@/components/Reveal";
 import { getProjects } from "../api/project.api";
 import { FaGithub } from "react-icons/fa";
 import type { Project } from "../types/project.types";
-import TechIcon from "@/components/TechIcon";
+import ProjectTechStack from "./ProjectTechStack";
+import ProjectDescription from "./ProjectDescription";
+import ProjectBulletList from "./ProjectBulletList";
+import ExpandableProjectGrid from "./ExpandableProjectGrid";
 
 
 
@@ -27,7 +29,7 @@ export default async function Projects() {
   }
 
   return (
-    <section id="projects" className="mx-auto max-w-6xl px-5 py-24 sm:px-8">
+    <section id="projects" className="mx-auto max-w-6xl px-5 py-14 sm:py-20 md:py-24 sm:px-8">
       <Reveal className="mb-12 text-center">
         <p className="font-mono-custom mb-3 text-xs uppercase tracking-widest text-lime-400">
           Featured Work
@@ -37,10 +39,10 @@ export default async function Projects() {
         </h2>
       </Reveal>
 
-      {/* 2-col md, 3-col lg — compact grid */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {/* 2-col md, 3-col lg — compact grid; only the first 3 show on mobile until "Show more" */}
+      <ExpandableProjectGrid mobileLimit={3}>
         {projects.map((project, index) => (
-          <Reveal key={project._id} delay={index * 100}>
+          <Reveal key={project._id} delay={index * 100} className="h-full">
             <Card className="group flex h-full flex-col overflow-hidden border-zinc-800 bg-zinc-900/40 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-lime-400/40">
 
               {/* Cover image — fixed compact height */}
@@ -62,10 +64,10 @@ export default async function Projects() {
                 {/* Header: tag + name + links */}
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="font-mono-custom text-[10px] uppercase tracking-widest text-lime-400">
+                    <p className="font-mono-custom truncate text-[10px] uppercase tracking-widest text-lime-400">
                       {project.tag}
                     </p>
-                    <h3 className="font-display mt-0.5 text-base font-bold leading-snug text-white">
+                    <h3 className="font-display mt-0.5 line-clamp-2 text-base font-bold leading-snug text-white">
                       {project.name}
                     </h3>
                   </div>
@@ -95,52 +97,37 @@ export default async function Projects() {
                         <ArrowUpRight className="h-3 w-3" />
                       </Link>
                     )}
+                    {!project.github && !project.url && (
+                      <span className="flex items-center gap-1 rounded-2xl border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 text-[10px] font-mono-custom text-zinc-500">
+                        <Lock className="h-3 w-3 text-zinc-500" />
+                        <span>Private</span>
+                      </span>
+                    )}
                   </div>
                 </div>
 
-                {/* Short description — full text */}
-                {project.desc && (
-                  <p className="mt-2 text-xs leading-relaxed text-zinc-400">
-                    {project.desc}
-                  </p>
-                )}
+                {/* Short description — clamped with a "more"/"less" toggle */}
+                {project.desc && <ProjectDescription text={project.desc} />}
 
-                {/* Bullet points — max 3 */}
+                {/* Bullet points — capped with a "more"/"less" toggle */}
                 {project.points.length > 0 && (
-                  <ul className="mt-2 space-y-1.5">
-                    {project.points.slice(0, 3).map((point, idx) => (
-                      <li
-                        key={idx}
-                        className="flex gap-2 text-xs leading-relaxed text-zinc-400"
-                      >
-                        <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-lime-400" />
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
+                  <ProjectBulletList
+                    points={project.points}
+                    mobileLimit={2}
+                    desktopLimit={3}
+                  />
                 )}
 
-                {/* Tech stack — pushed to bottom */}
+                {/* Tech stack — pushed to bottom; capped with a toggle on mobile only */}
                 {project.stack.length > 0 && (
-                  <div className="mt-auto flex flex-wrap gap-1.5 pt-3">
-                    {project.stack.map((tech) => (
-                      <Badge
-                        key={tech}
-                        variant="outline"
-                        className="font-mono-custom flex items-center gap-1 rounded-full border-zinc-700 bg-zinc-900/60 px-2 py-0.5 text-[10px] font-normal text-zinc-300 transition-colors hover:border-lime-400/40"
-                      >
-                        <TechIcon name={tech} className="h-2.5 w-2.5 flex-shrink-0" />
-                        <span>{tech}</span>
-                      </Badge>
-                    ))}
-                  </div>
+                  <ProjectTechStack stack={project.stack} mobileLimit={5} />
                 )}
 
               </CardContent>
             </Card>
           </Reveal>
         ))}
-      </div>
+      </ExpandableProjectGrid>
     </section>
   );
 }

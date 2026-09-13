@@ -84,7 +84,7 @@ export default async function Contact() {
 
 
   return (
-    <section id="contact" className="relative overflow-hidden py-24">
+    <section id="contact" className="relative overflow-hidden py-14 sm:py-20 md:py-24">
       {/* Background glow blobs */}
       <div className="pointer-events-none absolute -left-40 top-10 h-80 w-80 rounded-full bg-lime-400/5 blur-3xl" />
       <div className="pointer-events-none absolute -right-40 bottom-10 h-80 w-80 rounded-full bg-lime-400/5 blur-3xl" />

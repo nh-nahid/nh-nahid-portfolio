@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import type { IconType } from "react-icons";
 import {
   SiHtml5,
@@ -186,6 +188,45 @@ const TECH_MAP: Record<string, TechMeta> = {
   cloudinary: { icon: SiCloudinary, color: "#3448C5" },
 };
 
+function getSimpleIconSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/\+/g, "plus")
+    .replace(/#/g, "sharp")
+    .replace(/\./g, "dot")
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function DynamicCdnIcon({
+  name,
+  className = "h-4 w-4",
+  size,
+}: {
+  name: string;
+  className?: string;
+  size?: number;
+}) {
+  const [hasError, setHasError] = useState(false);
+  const slug = getSimpleIconSlug(name);
+
+  if (hasError || !slug) {
+    return <Code2 className={className} size={size} />;
+  }
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={`https://cdn.simpleicons.org/${slug}`}
+      alt={name}
+      className={`${className} object-contain`}
+      style={size ? { width: size, height: size } : undefined}
+      onError={() => setHasError(true)}
+    />
+  );
+}
+
 interface TechIconProps {
   name: string;
   className?: string;
@@ -203,7 +244,7 @@ export default function TechIcon({
   const meta = TECH_MAP[normalized];
 
   if (!meta) {
-    return <Code2 className={className} size={size} />;
+    return <DynamicCdnIcon name={name} className={className} size={size} />;
   }
 
   const IconComponent = meta.icon;

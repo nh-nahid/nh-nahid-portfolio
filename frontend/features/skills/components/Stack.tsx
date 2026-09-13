@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import Reveal from "@/components/Reveal";
 import TechOrbit from "@/components/TechOrbit";
 import TechIcon from "@/components/TechIcon";
+import ToolboxGrid from "@/components/ToolboxGrid";
+import CategoryBulletList from "@/components/CategoryBulletList";
 
 import { getHome } from "@/features/home/api/home.api";
 import { getSkills } from "../api/skill.api";
@@ -52,7 +54,7 @@ export default async function Stack() {
   return (
     <section
       id="stack"
-      className="mx-auto max-w-6xl px-5 py-24 sm:px-8"
+      className="mx-auto max-w-6xl px-5 py-14 sm:py-20 md:py-24 sm:px-8"
     >
       <Reveal className="mx-auto max-w-2xl text-center">
         <p className="font-mono-custom mb-4 text-xs uppercase tracking-widest text-lime-400">
@@ -123,18 +125,7 @@ export default async function Stack() {
               </span>
             </div>
 
-            <div className="flex flex-wrap gap-2.5 sm:gap-3">
-              {skills.toolbox.map((tool, idx) => (
-                <Badge
-                  key={`${tool}-${idx}`}
-                  variant="outline"
-                  className="group flex items-center gap-2.5 rounded-xl border-zinc-800 bg-zinc-900/70 px-4 py-2.5 text-xs font-normal text-zinc-300 transition-all duration-200 hover:-translate-y-0.5 hover:border-lime-400/50 hover:bg-zinc-800/90 hover:text-white hover:shadow-[0_0_15px_rgba(163,230,53,0.15)]"
-                >
-                  <TechIcon name={tool} className="h-4 w-4 flex-shrink-0 transition-transform duration-200 group-hover:scale-110" />
-                  <span className="font-mono-custom font-medium">{tool}</span>
-                </Badge>
-              ))}
-            </div>
+            <ToolboxGrid tools={skills.toolbox} mobileLimit={14} />
           </div>
         </Reveal>
       )}
@@ -168,22 +159,7 @@ export default async function Stack() {
                       </h3>
                     </div>
 
-                    <ul className="space-y-3">
-                      {category.items.map(
-                        (item) => (
-                          <li
-                            key={item}
-                            className="flex gap-2 text-sm leading-relaxed text-zinc-400"
-                          >
-                            <span className="text-lime-400">
-                              ▸
-                            </span>
-
-                            <span>{item}</span>
-                          </li>
-                        )
-                      )}
-                    </ul>
+                    <CategoryBulletList items={category.items} limit={2} />
                   </article>
                 );
               }

@@ -9,6 +9,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import ThemeAccentPicker from "@/components/ThemeAccentPicker";
 
 
 const NAV = [
@@ -134,21 +135,24 @@ export default function Navbar() {
 
 
 
-        {/* Desktop CTA */}
-        <Button
-          onClick={() => go("contact")}
-          className="
-            hidden rounded-lg
-            py-4
-            px-6
-            bg-lime-400
-            text-zinc-950
-            hover:bg-lime-300
-            md:inline-flex
-          "
-        >
-          Let's Ship It
-        </Button>
+        {/* Actions (Accent Picker & CTA) */}
+        <div className="flex items-center gap-3">
+          <ThemeAccentPicker />
+          <Button
+            onClick={() => go("contact")}
+            className="
+              hidden rounded-lg
+              py-4
+              px-6
+              bg-lime-400
+              text-zinc-950
+              hover:bg-lime-300
+              md:inline-flex
+            "
+          >
+            Let's Ship It
+          </Button>
+        </div>
 
 
 
@@ -186,7 +190,7 @@ export default function Navbar() {
                     go(item.id)
                   }
                   className="
-                    rounded-lg px-2 py-3
+                    rounded-lg px-6 py-3
                     text-left text-sm font-medium
                     text-zinc-300
                     transition-colors
@@ -205,7 +209,8 @@ export default function Navbar() {
                   go("contact")
                 }
                 className="
-                  mt-4 w-full rounded-full
+                  mt-4 w-auto self-center rounded-full
+                  px-10
                   bg-lime-400
                   text-zinc-950
                   hover:bg-lime-300

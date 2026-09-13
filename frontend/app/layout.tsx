@@ -7,7 +7,9 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import SmoothScroll from "@/components/SmoothScroll";
 import Preloader from "@/components/Preloader";
+import ContinuousKeepAlive from "@/components/ContinuousKeepAlive";
 import { AuthProvider } from "@/context/AuthContext";
+import { ThemeAccentProvider } from "@/context/ThemeAccentContext";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -39,7 +41,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+    <html
+      lang="en"
+      className="h-full overflow-x-hidden antialiased"
+      suppressHydrationWarning
+    >
       <body
         suppressHydrationWarning
         className={`
@@ -47,8 +53,11 @@ export default function RootLayout({
           ${inter.variable}
           ${jetbrainsMono.variable}
           min-h-full
+          w-full
+          max-w-[100vw]
           flex
           flex-col
+          overflow-x-hidden
           bg-zinc-950
           text-white
           font-body
@@ -56,10 +65,13 @@ export default function RootLayout({
       >
         <SmoothScroll />
         <Preloader />
+        <ContinuousKeepAlive />
 
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+        <ThemeAccentProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </ThemeAccentProvider>
         <Toaster position="bottom-right" richColors />
       </body>
     </html>

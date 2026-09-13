@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Upload } from "lucide-react";
+import { Upload, Download } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -62,6 +62,25 @@ export default function ProfileForm({ initialData, onSave }: ProfileFormProps) {
       await onSave?.(form, avatarFile, resumeFile);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleExportJSON() {
+    try {
+      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5050";
+      const res = await fetch(`${serverUrl}/api/v1/profile/export-json`);
+      if (!res.ok) throw new Error("Failed to export portfolio JSON");
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "portfolio_data.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export JSON error:", err);
     }
   }
 
@@ -249,13 +268,23 @@ export default function ProfileForm({ initialData, onSave }: ProfileFormProps) {
           </CardContent>
         </Card>
 
-        <Button
-          type="submit"
-          disabled={saving}
-          className="rounded-full bg-lime-400 text-zinc-950 hover:bg-lime-300 disabled:opacity-60 font-semibold"
-        >
-          {saving ? "Saving..." : "Save Changes"}
-        </Button>
+        <div className="flex flex-wrap items-center gap-4">
+          <Button
+            type="submit"
+            disabled={saving}
+            className="rounded-full bg-lime-400 text-zinc-950 hover:bg-lime-300 disabled:opacity-60 font-semibold"
+          >
+            {saving ? "Saving..." : "Save Changes"}
+          </Button>
+
+          <Button
+            type="button"
+            onClick={handleExportJSON}
+            className="rounded-full border border-zinc-700 bg-zinc-900 text-zinc-200 hover:border-lime-400 hover:text-lime-400 font-semibold"
+          >
+            <Download className="mr-2 h-4 w-4" /> Export Portfolio JSON
+          </Button>
+        </div>
       </form>
     </div>
   );

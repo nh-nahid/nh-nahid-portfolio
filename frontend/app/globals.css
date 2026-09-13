@@ -2,6 +2,12 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@theme {
+  --color-lime-400: var(--accent-color, #a3e635);
+  --color-lime-300: var(--accent-hover, #84cc16);
+  --color-lime-500: var(--accent-hover, #84cc16);
+}
+
 .font-display {
   font-family: var(--font-display);
 }
@@ -111,13 +117,13 @@
 .cursor-dot {
   width: 8px;
   height: 8px;
-  background: rgb(163, 230, 53);
+  background: var(--accent-color, rgb(163, 230, 53));
 }
 
 .cursor-ring {
   width: 36px;
   height: 36px;
-  border: 1px solid rgba(163, 230, 53, 0.55);
+  border: 1px solid rgba(var(--accent-rgb, 163, 230, 53), 0.55);
   background: transparent;
 
   transition:
@@ -131,8 +137,8 @@
 .cursor-ring--active {
   width: 58px;
   height: 58px;
-  background-color: rgba(163, 230, 53, 0.08);
-  border-color: rgba(163, 230, 53, 0.9);
+  background-color: rgba(var(--accent-rgb, 163, 230, 53), 0.08);
+  border-color: rgba(var(--accent-rgb, 163, 230, 53), 0.9);
 }
 
 .cursor-ring--down {
