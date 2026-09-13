@@ -74,7 +74,13 @@
 }
 
 .marquee-track {
-  animation: marquee 40s linear infinite;
+  animation: marquee 60s linear infinite;
+}
+
+@media (min-width: 640px) {
+  .marquee-track {
+    animation-duration: 40s;
+  }
 }
 
 .marquee-mask {

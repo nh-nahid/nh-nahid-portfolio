@@ -16,20 +16,21 @@ export default async function Stats() {
   }
 
   return (
-    <section id="about" className="py-14">
-      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 px-5 sm:px-8 md:grid-cols-4">
+    <section id="about" className="py-10 sm:py-14">
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-3 px-4 sm:gap-4 sm:px-8 md:grid-cols-4">
         {stats.map((stat, index) => (
           <Reveal
-            key={stat.label}
+            key={stat.label || index}
             delay={index * 100}
+            className="h-full"
           >
-            <Card className="border-zinc-800 bg-zinc-900/40 text-center backdrop-blur-sm">
-              <CardContent className="p-5">
-                <p className="font-display text-3xl font-bold text-lime-400 sm:text-4xl">
+            <Card className="flex h-full flex-col justify-center border-zinc-800 bg-zinc-900/40 text-center backdrop-blur-sm transition-all duration-300 hover:border-lime-400/40">
+              <CardContent className="flex h-full flex-col justify-center p-3.5 sm:p-5">
+                <p className="font-display text-2xl font-bold tracking-tight text-lime-400 break-words sm:text-3xl lg:text-4xl">
                   {stat.value}
                 </p>
 
-                <p className="mt-2 text-sm text-zinc-400">
+                <p className="mt-1.5 text-xs font-medium leading-snug text-zinc-400 break-words sm:mt-2 sm:text-sm">
                   {stat.label}
                 </p>
               </CardContent>
